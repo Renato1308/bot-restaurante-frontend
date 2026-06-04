@@ -3,6 +3,8 @@ import json
 
 app = FastAPI()
 
+pedidos = []
+
 @app.get("/")
 def home():
     return {"mensagem": "Renato criou sua primeira API"}
@@ -114,4 +116,80 @@ def cliente ():
         "nome": "Renato",
         "telefone": "(11)99999-9999",
         "bairro": "Centro"
+    }
+    
+@app.get("/novo-pedido/{produto_id}")
+def novo_pedido(produto_id: int):
+    
+    with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
+        dados = json.load(arquivo)
+        
+    for produto in dados:
+        
+        if produto["id"] == produto_id:
+            
+            pedidos.append(produto)
+            
+            return {
+                "mensagem": "Produto adicionado",
+                "produto": produto
+            }
+            
+    return {"erro": "Produto não encontrado"}
+
+@app.get("/pedidos")
+def listar_pedidos():
+    
+    return pedidos
+
+@app.get("/total-pedidos")
+def total_pedidos():
+    
+    total = 0
+    
+    for pedido in pedidos:
+        total += pedido["preco"]
+        
+    return {
+        "quantidade": len(pedidos),
+        "total": total
+        
+    }
+    
+@app.get("/endereco")
+def endereco():
+    
+    return {
+        "rua": "Rua das Flores",
+        "numero": "123",
+        "complemento": "Apartamento 10",
+        "bairro": "Centro"
+    }
+    
+@app.get("/pagamento")
+def pagamento():
+    
+    return {
+        "forma": "PIX"
+    }
+    
+@app.get("/pedido-completo")
+def pedido_completo():
+    
+    total = 0
+    
+    for pedido in pedidos:
+        total += pedido["preco"]
+        
+    return {
+        "cliente": "Renato",
+        "telefone": "(11)99999-9999",
+        "itens": pedidos,
+        "endereco": {
+            "rua": "Rua das Flores",
+            "numero": "123",
+            "bairro": "Centro"
+        },
+        "pagamento": "PIX",
+        "total": total
     }
