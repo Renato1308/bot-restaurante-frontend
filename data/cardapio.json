@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "nome": "Xis Coração",
+        "categoria": "lanches",
+        "preco": 32.0
+    },
+    {
+        "id": 2,
+        "nome": "Pizza Calabreza",
+        "categoria": "Pizzas",
+        "preco": 45.0
+    },
+    {
+        "id": 3,
+        "nome": "Hambúrguer Artesanal",
+        "categoria": "Hambúrgueres",
+        "preco": 28.0
+    }
+]
