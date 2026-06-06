@@ -1,7 +1,22 @@
 from fastapi import FastAPI
 import json
+import sqlite3
 
 app = FastAPI()
+
+conn = sqlite3.connect("restaurante.db",check_same_thread=False)
+
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS pedidos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    produto TEXT,
+    valor REAL
+)
+""")
+
+conn.commit()
 
 pedidos = []
 
@@ -54,6 +69,13 @@ def fazer_pedido(produto_id: int):
     for produto in dados:
         
         if produto["id"] == produto_id:
+            
+            cursor.execute(
+                "INSERT INTO pedidos (produto, valor) VALUES (?, ?)",
+                (produto["nome"], produto["preco"])  
+            )
+            
+            conn.commit()
             
             return {
                 "mensagem": "pedido adicionado",
@@ -193,3 +215,12 @@ def pedido_completo():
         "pagamento": "PIX",
         "total": total
     }
+    
+@app.get("/pedidos-banco")
+def listar_pedidos_banco():
+    
+    cursor.execute("SELECT * FROM pedidos")
+    
+    pedidos = cursor.fetchall()
+    
+    return pedidos
