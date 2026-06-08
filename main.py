@@ -11,8 +11,12 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS pedidos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente TEXT,
+    telefone TEXT,
+    endereco TEXT,
+    pagamento TEXT,
     produto TEXT,
-    valor REAL
+    valor REAL  
 )
 """)
 
@@ -71,13 +75,24 @@ def fazer_pedido(produto_id: int):
         if produto["id"] == produto_id:
             
             cursor.execute(
-                "INSERT INTO pedidos (produto, valor) VALUES (?, ?)",
-                (produto["nome"], produto["preco"])  
-            )
+    """
+    INSERT INTO pedidos
+    (cliente, telefone, endereco, pagamento, produto, valor)
+    Values (?, ?, ?, ?, ?, ?)
+    """,
+    (
+        "Renato",
+        "(11)99999-9999",
+        "Rua das Flores 123",
+        "PIX",
+        produto["nome"],
+        produto["preco"]
+    )
+)
+       
+        conn.commit()
             
-            conn.commit()
-            
-            return {
+    return {
                 "mensagem": "pedido adicionado",
                 "produto": produto["nome"],
                 "valor": produto["preco"]
@@ -224,3 +239,46 @@ def listar_pedidos_banco():
     pedidos = cursor.fetchall()
     
     return pedidos
+
+@app.get("/pedido-banco/{pedido_id}")
+def buscar_pedido_banco(pedido_id: int):
+    
+    cursor.execute(
+        "SELECT * FROM pedidos WHERE id = ?",
+        (pedido_id,)
+    )
+    
+    pedido = cursor.fetchone()
+    
+    if pedido:
+        return pedido
+    
+    return{"Erro": "Pedido não encontrado"}
+
+@app.get("/atualizar-pagamento/{pedido_id}/{novo_pagamento}")
+def atualizar_pagamento(pedido_id: int, novo_pagamento: str):
+    
+    cursor.execute(
+        "UPDATE pedidos SET pagamento = ? WHERE id = ?",
+        (novo_pagamento, pedido_id)
+    )
+    
+    conn.commit()
+    
+    return{
+        "mensagem": "Pagamento atualizado com sucesso"
+    }
+    
+@app.get("/deletar-pedido/{pedido_id}")
+def deletar_pedido(pedido_id: int):
+    
+    cursor.execute(
+        "DELETE FROM pedidos WHERE id = ?",
+        (pedido_id,)
+    )
+    
+    conn.commit()
+    
+    return{
+        "mensagem": "Pedido removido com sucesso"
+    }
