@@ -3,6 +3,8 @@ from database import conn, cursor
 from routes.cardapio import router as cardapio_router
 from routes.pedidos import router as pedidos_router
 from routes.cliente import router as cliente_router
+from routes.endereco import router as endereco_router
+from routes.pagamento import router as pagamento_router
 import json
 
 app = FastAPI()
@@ -10,6 +12,8 @@ app = FastAPI()
 app.include_router(cardapio_router)
 app.include_router(pedidos_router)
 app.include_router(cliente_router)
+app.include_router(endereco_router)
+app.include_router(pagamento_router)
 
 pedidos = []
 
@@ -101,24 +105,7 @@ def total_pedidos():
         "total": total
         
     }
-    
-@app.get("/endereco")
-def endereco():
-    
-    return {
-        "rua": "Rua das Flores",
-        "numero": "123",
-        "complemento": "Apartamento 10",
-        "bairro": "Centro"
-    }
-    
-@app.get("/pagamento")
-def pagamento():
-    
-    return {
-        "forma": "PIX"
-    }
-    
+        
 @app.get("/pedido-completo")
 def pedido_completo():
     
