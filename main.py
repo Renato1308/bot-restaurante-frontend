@@ -1,103 +1,21 @@
 from fastapi import FastAPI
+from database import conn, cursor
+from routes.cardapio import router as cardapio_router
+from routes.pedidos import router as pedidos_router
+from routes.cliente import router as cliente_router
 import json
-import sqlite3
 
 app = FastAPI()
 
-conn = sqlite3.connect("restaurante.db",check_same_thread=False)
-
-cursor = conn.cursor()
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS pedidos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cliente TEXT,
-    telefone TEXT,
-    endereco TEXT,
-    pagamento TEXT,
-    produto TEXT,
-    valor REAL  
-)
-""")
-
-conn.commit()
+app.include_router(cardapio_router)
+app.include_router(pedidos_router)
+app.include_router(cliente_router)
 
 pedidos = []
 
 @app.get("/")
 def home():
     return {"mensagem": "Renato criou sua primeira API"}
-
-@app.get("/cardapio")
-def cardapio():
-
-    with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
-        dados = json.load(arquivo)
-
-    return dados
-
-@app.get("/produto/{produto_id}")
-def buscar_produto(produto_id: int):
-
-    with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
-        dados = json.load(arquivo)
-
-    for produto in dados:
-        if produto["id"] == produto_id:
-            return produto
-
-    return {"erro": "Produto não encontrado"}
-
-@app.get("/buscar/{nome_produto}")
-def buscar_por_nome(nome_produto: str):
-    
-    with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
-        dados = json.load(arquivo)
-        
-    resultados = []
-    
-    for produto in dados:
-        
-        if nome_produto.lower() in produto["nome"].lower():
-            resultados.append(produto)
-            
-    return resultados
-
-@app.get("/pedido/{produto_id}")
-def fazer_pedido(produto_id: int):
-    
-    with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
-        dados = json.load(arquivo)
-        
-        
-    for produto in dados:
-        
-        if produto["id"] == produto_id:
-            
-            cursor.execute(
-    """
-    INSERT INTO pedidos
-    (cliente, telefone, endereco, pagamento, produto, valor)
-    Values (?, ?, ?, ?, ?, ?)
-    """,
-    (
-        "Renato",
-        "(11)99999-9999",
-        "Rua das Flores 123",
-        "PIX",
-        produto["nome"],
-        produto["preco"]
-    )
-)
-       
-        conn.commit()
-            
-    return {
-                "mensagem": "pedido adicionado",
-                "produto": produto["nome"],
-                "valor": produto["preco"]
-            }
-    return {"erro": "Produto não encontrado"}
 
 @app.get("/resumo/{produto_id}")    
 def resumo_pedido(produto_id: int):
@@ -145,16 +63,7 @@ def carrinho():
         "itens": itens,
         "total": total
     }
-    
-@app.get("/cliente")
-def cliente ():
-    
-    return {
-        "nome": "Renato",
-        "telefone": "(11)99999-9999",
-        "bairro": "Centro"
-    }
-    
+
 @app.get("/novo-pedido/{produto_id}")
 def novo_pedido(produto_id: int):
     
@@ -231,15 +140,6 @@ def pedido_completo():
         "total": total
     }
     
-@app.get("/pedidos-banco")
-def listar_pedidos_banco():
-    
-    cursor.execute("SELECT * FROM pedidos")
-    
-    pedidos = cursor.fetchall()
-    
-    return pedidos
-
 @app.get("/pedido-banco/{pedido_id}")
 def buscar_pedido_banco(pedido_id: int):
     
