@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from database import conn, cursor
+from models.pedido import Pedido
 import json
 
 router = APIRouter()
@@ -48,3 +49,28 @@ def fazer_pedido(produto_id: int):
                 "valor": produto["preco"]
             }
         return {"erro": "Produto não encontrado"}
+    
+@router.post("/novo-pedido")
+def criar_pedido(pedido: Pedido):
+    
+    cursor.execute(
+        """
+        INSERT INTO pedidos
+        (cliente, telefone, endereco, pagamento, produto, valor)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            pedido.cliente,
+            pedido.telefone,
+            pedido.endereco,
+            pedido.pagamento,
+            pedido.produto,
+            pedido.valor
+        )
+    )
+    
+    conn.commit()
+    
+    return {
+        "mensagem": "Pedido cadastrado com sucesso"
+    }

@@ -1,8 +1,9 @@
 from fastapi import APIRouter
+from models.cliente import Cliente
 
 router = APIRouter()
 
-@router.get("/cliente")
+@router.get("/cliente", response_model=Cliente)
 def cliente():
     
     return {
