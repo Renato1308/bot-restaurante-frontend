@@ -127,16 +127,6 @@ def pedido_completo():
         "total": total
     }
     
-@app.get("/pedido-banco/{pedido_id}")
-def buscar_pedido_banco(pedido_id: int):
-    
-    cursor.execute(
-        "SELECT * FROM pedidos WHERE id = ?",
-        (pedido_id,)
-    )
-    
-    pedido = cursor.fetchone()
-    
     if pedido:
         return pedido
     

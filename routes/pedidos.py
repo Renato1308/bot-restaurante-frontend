@@ -1,18 +1,36 @@
 from fastapi import APIRouter
 from database import conn, cursor
 from models.pedido import Pedido
+from models.pedido import Pedido, PedidoResponse
 import json
 
 router = APIRouter()
 
-@router.get("/pedidos-banco")
-def listar_pedidos_banco():
+@router.get(
+    "/pedido-banco/{pedido_id}",
+    response_model=PedidoResponse
+)
+def buscar_pedido_banco(pedido_id: int):
     
-    cursor.execute("SELECT * FROM pedidos")
+    cursor.execute(
+        "SELECT * FROM pedidos WHERE id = ?",
+        (pedido_id,)
+    )
     
-    pedidos = cursor.fetchall()
+    pedido = cursor.fetchone()
     
-    return pedidos
+    if not pedido:
+        return {"erro": "Pedido não encontrado"}
+    
+    return {
+        "id": pedido[0],
+        "cliente": pedido[1],
+        "telefone": pedido[2],
+        "endereco": pedido[3],
+        "pagamento": pedido[4],
+        "produto": pedido[5],
+        "valor": pedido[6]
+    }
 
 @router.get("/pedido/{produto_id}")
 def fazer_pedido(produto_id: int):
@@ -74,3 +92,4 @@ def criar_pedido(pedido: Pedido):
     return {
         "mensagem": "Pedido cadastrado com sucesso"
     }
+ 

@@ -8,3 +8,7 @@ class Pedido(BaseModel):
     pagamento: str
     produto: str
     valor: float
+    
+class PedidoResponse(Pedido):
+    id: int
+    
