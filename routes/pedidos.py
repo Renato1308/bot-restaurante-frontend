@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from database import conn, cursor
-from models.pedido import Pedido
 from models.pedido import Pedido, PedidoResponse
 import json
 
@@ -93,3 +92,33 @@ def criar_pedido(pedido: Pedido):
         "mensagem": "Pedido cadastrado com sucesso"
     }
  
+@router.put("/pedido-banco/{pedido_id}")
+def atualizar_pedido(pedido_id: int, pedido: Pedido):
+     
+    cursor.execute(
+        """
+        UPDATE pedidos
+        SET cliente = ?,
+            telefone = ?,
+            endereco = ?,
+            pagamento = ?,
+            produto = ?,
+            valor = ?
+        WHERE id = ?
+        """,
+        (
+            pedido.cliente,
+            pedido.telefone,
+            pedido.endereco,
+            pedido.pagamento,
+            pedido.produto,
+            pedido.valor,
+            pedido_id 
+        )
+    )
+     
+    conn.commit()
+     
+    return {
+        "mensagem": "Pedido atualizado com sucesso"
+    }
