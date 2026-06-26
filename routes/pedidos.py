@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter 
 from database import conn, cursor
 from models.pedido import Pedido, PedidoResponse
 import json
@@ -121,4 +121,18 @@ def atualizar_pedido(pedido_id: int, pedido: Pedido):
      
     return {
         "mensagem": "Pedido atualizado com sucesso"
+    }
+    
+@router.delete("/pedido-banco/{pedido_id}")
+def deletar_pedido(pedido_id: int):
+    
+    cursor.execute(
+        "DELETE FROM pedidos WHERE id = ?",
+        (pedido_id,)
+    )
+    
+    conn.commit()
+    
+    return {
+        "mensagem": "Pedido removido com sucesso"
     }
