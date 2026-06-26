@@ -3,7 +3,13 @@ from models.cliente import Cliente
 
 router = APIRouter()
 
-@router.get("/cliente", response_model=Cliente)
+@router.get(
+    "/cliente",
+    response_model=Cliente,
+    tags=["Cliente"],
+    summary="Consultar Cliente",
+    description="Retorna os dados do cliente."
+)
 def cliente():
     
     return {

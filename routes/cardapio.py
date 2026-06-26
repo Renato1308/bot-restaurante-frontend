@@ -3,7 +3,12 @@ import json
 
 router = APIRouter()
 
-@router.get("/cardapio")
+@router.get(
+    "/cardapio",
+    tags=["Cardápio"],
+    summary="Listar cardápio",
+    description="Retorna todos os produtosdo cardápio."
+)
 def cardapio():
     
     with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
@@ -11,7 +16,12 @@ def cardapio():
         
     return dados
 
-@router.get("/produto/{produto_id}")
+@router.get(
+    "/produto/{produto_id}",
+    tags=["Cardápio"],
+    summary="Buscar produto por ID",
+    description="Retorna um produto específico do cardápio."
+)
 def buscar_produto(produto_id: int):
 
     with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
@@ -23,7 +33,12 @@ def buscar_produto(produto_id: int):
 
     return {"erro": "Produto não encontrado"}
 
-@router.get("/buscar/{nome_produto}")
+@router.get(
+    "/buscar/{nome_produto}",
+    tags=["Cardápio"],
+    summary="Buscar produto por nome",
+    description="Pesquisa produtos do cardápio pelo nome."
+)
 def buscar_por_nome(nome_produto: str):
     
     with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:

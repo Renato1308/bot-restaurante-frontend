@@ -1,4 +1,4 @@
-from fastapi import APIRouter 
+from fastapi import APIRouter, HTTPException
 from database import conn, cursor
 from models.pedido import Pedido, PedidoResponse
 import json
@@ -6,20 +6,39 @@ import json
 router = APIRouter()
 
 @router.get(
-    "/pedido-banco/{pedido_id}",
-    response_model=PedidoResponse
+    "/pedidos-banco",
+    response_model=list[PedidoResponse],
+    tags=["Pedidos"],
+    summary="Listar pedidos",
+    description="Retorna todos os pedidos cadastrados no banco de dados."
 )
-def buscar_pedido_banco(pedido_id: int):
+def listar_pedidos():
     
-    cursor.execute(
-        "SELECT * FROM pedidos WHERE id = ?",
-        (pedido_id,)
-    )
+    cursor.execute("SELECT * FROM pedidos")
+        
+    pedidos = cursor.fetchall()
     
+    resultado = []
+    
+    for pedido in pedidos:
+        resultado.append({
+            "id": pedido[0],
+            "cliente": pedido[1],
+            "telefone": pedido[2],
+            "endereco": pedido[3],
+            "pagamento": pedido[4],
+            "produto": pedido[5],
+            "valor": pedido[6]
+        })
+            
+    return resultado
     pedido = cursor.fetchone()
     
     if not pedido:
-        return {"erro": "Pedido não encontrado"}
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido não encontrado" 
+        )
     
     return {
         "id": pedido[0],
@@ -67,7 +86,12 @@ def fazer_pedido(produto_id: int):
             }
         return {"erro": "Produto não encontrado"}
     
-@router.post("/novo-pedido")
+@router.post(
+    "/novo-pedido",
+    tags=["Pedidos"],
+    summary="Cadastrar um novo pedido",
+    description="Cria um novo pedido no banco de dados."
+)
 def criar_pedido(pedido: Pedido):
     
     cursor.execute(
@@ -92,7 +116,12 @@ def criar_pedido(pedido: Pedido):
         "mensagem": "Pedido cadastrado com sucesso"
     }
  
-@router.put("/pedido-banco/{pedido_id}")
+@router.put(
+    "/pedido-banco/{pedido_id}",
+    tags=["Pedidos"],
+    summary="Atualiza um pedido",
+    description="Atualiza os dados de um pedido existente."
+)
 def atualizar_pedido(pedido_id: int, pedido: Pedido):
      
     cursor.execute(
@@ -123,7 +152,12 @@ def atualizar_pedido(pedido_id: int, pedido: Pedido):
         "mensagem": "Pedido atualizado com sucesso"
     }
     
-@router.delete("/pedido-banco/{pedido_id}")
+@router.delete(
+    "/pedido-banco/{pedido_id}",
+    tags=["Pedidos"],
+    summary="Excluir um pedido",
+    description="Remove um pedido do banco de dados."
+)
 def deletar_pedido(pedido_id: int):
     
     cursor.execute(
