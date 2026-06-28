@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from database import conn, cursor
 from models.pedido import Pedido, PedidoResponse
+from services.pedido_service import pedido_para_dict
 import json
 
 router = APIRouter()
@@ -12,26 +13,52 @@ router = APIRouter()
     summary="Listar pedidos",
     description="Retorna todos os pedidos cadastrados no banco de dados."
 )
-def listar_pedidos():
+def listar_pedidos(
+    cliente: str = None,
+    pagamento: str = None,
+    valor_minimo: float = None,
+    valor_maximo: float = None
+):
     
-    cursor.execute("SELECT * FROM pedidos")
+    if cliente:
+    
+        cursor.execute(
+            "SELECT * FROM pedidos WHERE cliente = ?",
+            (cliente,)
+        )
+    elif pagamento:
+        
+        cursor.execute(
+            "SELECT * FROM pedidos WHERE pagamento = ?",
+            (pagamento,)
+        )
+        
+    elif valor_minimo is not None and valor_maximo is not None:
+        
+        cursor.execute(
+            """
+            SELECT * FROM pedidos
+            WHERE valor BETWEEN ? AND ?
+            """,
+            (valor_minimo, valor_maximo)
+        )
+    
+    else:
+    
+        cursor.execute(
+            "SELECT * FROM pedidos"
+        )
         
     pedidos = cursor.fetchall()
     
     resultado = []
     
     for pedido in pedidos:
-        resultado.append({
-            "id": pedido[0],
-            "cliente": pedido[1],
-            "telefone": pedido[2],
-            "endereco": pedido[3],
-            "pagamento": pedido[4],
-            "produto": pedido[5],
-            "valor": pedido[6]
-        })
+        resultado.append(
+            pedido_para_dict(pedido)
+        )
             
-    return resultado
+    return pedido_para_dict(pedido)
     pedido = cursor.fetchone()
     
     if not pedido:
@@ -170,3 +197,4 @@ def deletar_pedido(pedido_id: int):
     return {
         "mensagem": "Pedido removido com sucesso"
     }
+    
