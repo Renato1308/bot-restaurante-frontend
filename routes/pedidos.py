@@ -58,7 +58,8 @@ def listar_pedidos(
             pedido_para_dict(pedido)
         )
             
-    return pedido_para_dict(pedido)
+    return resultado
+
     pedido = cursor.fetchone()
     
     if not pedido:
@@ -140,7 +141,8 @@ def criar_pedido(pedido: Pedido):
     conn.commit()
     
     return {
-        "mensagem": "Pedido cadastrado com sucesso"
+        "mensagem": "Pedido cadastrado com sucesso",
+        "id": cursor.lastrowid
     }
  
 @router.put(
@@ -197,4 +199,27 @@ def deletar_pedido(pedido_id: int):
     return {
         "mensagem": "Pedido removido com sucesso"
     }
+ 
+@router.get(
+    "/pedido-banco/{pedido_id}",
+    response_model=PedidoResponse,
+    tags=["Pedidos"],
+    summary="Buscar pedido por ID",
+    description="Retorna um pedido específico pelo seu ID."
+)
+def buscar_pedido_banco(pedido_id: int):
     
+    cursor.execute(
+        "SELECT * FROM pedidos WHERE id = ?",
+        (pedido_id,)
+    )
+    
+    pedido = cursor.fetchone()
+    
+    if not pedido:
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido não encontrado"
+        )
+        
+    return pedido_para_dict(pedido)
