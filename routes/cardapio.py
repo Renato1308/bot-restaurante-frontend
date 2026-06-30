@@ -7,7 +7,7 @@ router = APIRouter()
     "/cardapio",
     tags=["Cardápio"],
     summary="Listar cardápio",
-    description="Retorna todos os produtosdo cardápio."
+    description="Retorna todos os produtos cadastrados no cardápio."
 )
 def cardapio():
     
@@ -19,8 +19,8 @@ def cardapio():
 @router.get(
     "/produto/{produto_id}",
     tags=["Cardápio"],
-    summary="Buscar produto por ID",
-    description="Retorna um produto específico do cardápio."
+    summary="Buscar produto",
+    description="Busca um produto pelo ID."
 )
 def buscar_produto(produto_id: int):
 
@@ -34,10 +34,10 @@ def buscar_produto(produto_id: int):
     return {"erro": "Produto não encontrado"}
 
 @router.get(
-    "/buscar/{nome_produto}",
+    "/buscar/{produto_id}",
     tags=["Cardápio"],
-    summary="Buscar produto por nome",
-    description="Pesquisa produtos do cardápio pelo nome."
+    summary="Buscar produto pelo nome",
+    description="Busca um produto utilizando parte do nome."
 )
 def buscar_por_nome(nome_produto: str):
     
