@@ -1,4 +1,4 @@
-def pedido_para_dict(pedido):
+def pedido_para_dict(pedido: tuple) -> dict:
     
     return{
         "id": pedido[0],

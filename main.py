@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 import os 
-from database import conn, cursor
+
 from routes.cardapio import router as cardapio_router
 from routes.pedidos import router as pedidos_router
 from routes.cliente import router as cliente_router
 from routes.endereco import router as endereco_router
 from routes.pagamento import router as pagamento_router
-import json
 
 load_dotenv()
 
@@ -22,8 +21,6 @@ app.include_router(pedidos_router)
 app.include_router(cliente_router)
 app.include_router(endereco_router)
 app.include_router(pagamento_router)
-
-pedidos = []
 
 @app.get("/")
 def home():
@@ -75,95 +72,4 @@ def carrinho():
         "itens": itens,
         "total": total
     }
-
-@app.get("/novo-pedido/{produto_id}")
-def novo_pedido(produto_id: int):
-    
-    with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
-        dados = json.load(arquivo)
-        
-    for produto in dados:
-        
-        if produto["id"] == produto_id:
             
-            pedidos.append(produto)
-            
-            return {
-                "mensagem": "Produto adicionado",
-                "produto": produto
-            }
-            
-    return {"erro": "Produto não encontrado"}
-
-@app.get("/pedidos")
-def listar_pedidos():
-    
-    return pedidos
-
-@app.get("/total-pedidos")
-def total_pedidos():
-    
-    total = 0
-    
-    for pedido in pedidos:
-        total += pedido["preco"]
-        
-    return {
-        "quantidade": len(pedidos),
-        "total": total
-        
-    }
-        
-@app.get("/pedido-completo")
-def pedido_completo():
-    
-    total = 0
-    
-    for pedido in pedidos:
-        total += pedido["preco"]
-        
-    return {
-        "cliente": "Renato",
-        "telefone": "(11)99999-9999",
-        "itens": pedidos,
-        "endereco": {
-            "rua": "Rua das Flores",
-            "numero": "123",
-            "bairro": "Centro"
-        },
-        "pagamento": "PIX",
-        "total": total
-    }
-    
-    if pedido:
-        return pedido
-    
-    return{"Erro": "Pedido não encontrado"}
-
-@app.get("/atualizar-pagamento/{pedido_id}/{novo_pagamento}")
-def atualizar_pagamento(pedido_id: int, novo_pagamento: str):
-    
-    cursor.execute(
-        "UPDATE pedidos SET pagamento = ? WHERE id = ?",
-        (novo_pagamento, pedido_id)
-    )
-    
-    conn.commit()
-    
-    return{
-        "mensagem": "Pagamento atualizado com sucesso"
-    }
-    
-@app.get("/deletar-pedido/{pedido_id}")
-def deletar_pedido(pedido_id: int):
-    
-    cursor.execute(
-        "DELETE FROM pedidos WHERE id = ?",
-        (pedido_id,)
-    )
-    
-    conn.commit()
-    
-    return{
-        "mensagem": "Pedido removido com sucesso"
-    }

@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 import json
 
 router = APIRouter()
@@ -31,10 +31,13 @@ def buscar_produto(produto_id: int):
         if produto["id"] == produto_id:
             return produto
 
-    return {"erro": "Produto não encontrado"}
+    raise HTTPException(
+        status_code=404,
+        detail="Produto não encontrado"
+    )
 
 @router.get(
-    "/buscar/{produto_id}",
+    "/buscar/{nome_produto}",
     tags=["Cardápio"],
     summary="Buscar produto pelo nome",
     description="Busca um produto utilizando parte do nome."

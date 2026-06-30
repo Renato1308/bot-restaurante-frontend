@@ -1,7 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from database import conn, cursor
 from models.pedido import Pedido, PedidoResponse
-from services.pedido_service import pedido_para_dict
+from services.pedido_repository import (
+    listar_pedidos,
+    buscar_pedido_por_id
+) 
 import json
 
 router = APIRouter()
@@ -60,24 +63,6 @@ def listar_pedidos(
             
     return resultado
 
-    pedido = cursor.fetchone()
-    
-    if not pedido:
-        raise HTTPException(
-            status_code=404,
-            detail="Pedido não encontrado" 
-        )
-    
-    return {
-        "id": pedido[0],
-        "cliente": pedido[1],
-        "telefone": pedido[2],
-        "endereco": pedido[3],
-        "pagamento": pedido[4],
-        "produto": pedido[5],
-        "valor": pedido[6]
-    }
-
 @router.get("/pedido/{produto_id}")
 def fazer_pedido(produto_id: int):
     
@@ -108,11 +93,17 @@ def fazer_pedido(produto_id: int):
         conn.commit()
             
         return {
-                "mensagem": "pedido adicionado",
-                "produto": produto["nome"],
-                "valor": produto["preco"]
-            }
-        return {"erro": "Produto não encontrado"}
+            "success": True,
+            "message": "pedido adicionado",
+            "produto": produto["nome"],
+            "valor": produto["preco"]
+        }
+        
+    raise HTTPException(
+    status_code=404,
+    detail="Produto não encontrado"
+    )
+        
     
 @router.post(
     "/novo-pedido",
@@ -141,7 +132,8 @@ def criar_pedido(pedido: Pedido):
     conn.commit()
     
     return {
-        "mensagem": "Pedido cadastrado com sucesso",
+        "success": True,
+        "message": "Pedido cadastrado com sucesso",
         "id": cursor.lastrowid
     }
  
@@ -178,7 +170,8 @@ def atualizar_pedido(pedido_id: int, pedido: Pedido):
     conn.commit()
      
     return {
-        "mensagem": "Pedido atualizado com sucesso"
+        "success": True,
+        "message": "Pedido atualizado com sucesso"
     }
     
 @router.delete(
@@ -197,7 +190,8 @@ def deletar_pedido(pedido_id: int):
     conn.commit()
     
     return {
-        "mensagem": "Pedido removido com sucesso"
+        "success": True,
+        "message": "Pedido removido com sucesso"
     }
  
 @router.get(
