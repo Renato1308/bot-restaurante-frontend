@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from database import conn, cursor
 from models.pedido import Pedido, PedidoResponse
-from services.pedido_repository import (
-    listar_pedidos,
+from services.pedido_service import pedido_para_dict
+from repositories.pedido_repository import (
+    listar_pedidos_db,
     buscar_pedido_por_id
 ) 
 import json
@@ -52,7 +53,7 @@ def listar_pedidos(
             "SELECT * FROM pedidos"
         )
         
-    pedidos = cursor.fetchall()
+    pedidos = listar_pedidos_db()
     
     resultado = []
     
@@ -208,7 +209,7 @@ def buscar_pedido_banco(pedido_id: int):
         (pedido_id,)
     )
     
-    pedido = cursor.fetchone()
+    pedido = buscar_pedido_por_id(pedido_id)
     
     if not pedido:
         raise HTTPException(
