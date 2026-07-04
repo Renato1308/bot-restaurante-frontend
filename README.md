@@ -1,149 +1,173 @@
-# 🍔 Bot Restaurante API
+# 🍔 Sistema de Gestão para Restaurantes
 
-> 🚧 Projeto em desenvolvimento — novas funcionalidades estão sendo implementadas continuamente.
+> 🚧 Projeto em desenvolvimento — evolução contínua rumo a uma aplicação Full Stack profissional.
 
-API REST desenvolvida com **FastAPI** para gerenciamento de pedidos de um restaurante.
+## 📖 Sobre o projeto
 
-O projeto foi criado com foco em aprendizado de desenvolvimento Backend utilizando Python e boas práticas de construção de APIs, servindo como base para futuras versões com React e Django.
+O Sistema de Gestão para Restaurantes é uma aplicação Full Stack desenvolvida com foco em aprendizado, boas práticas de desenvolvimento e construção de um projeto de nível profissional para portfólio.
 
----
+O objetivo é oferecer uma solução completa para gerenciamento de restaurantes, permitindo o controle de pedidos, produtos, clientes, estoque, usuários e relatórios, utilizando uma arquitetura moderna baseada em APIs REST.
 
-## 🚀 Tecnologias
-
-* Python 3
-* FastAPI
-* Pydantic
-* SQLite
-* Uvicorn
-* Git e GitHub
+Além de servir como projeto de estudos, a aplicação está sendo desenvolvida pensando em futuras evoluções para um produto comercial no modelo SaaS (Software as a Service).
 
 ---
 
-## 📁 Estrutura do Projeto
+# 🚀 Tecnologias
 
-```
+## Backend
+
+* Python
+* Django
+* Django REST Framework
+* PostgreSQL
+* JWT Authentication
+* Docker
+
+## Frontend
+
+* React
+* Vite
+* JavaScript
+* HTML5
+* CSS3
+
+## Ferramentas
+
+* Git
+* GitHub
+* Swagger / OpenAPI
+* Postman
+
+---
+
+# 📂 Estrutura do Projeto
+
+```text
 bot-restaurante/
 │
-├── data/
-├── models/
-├── routes/
-├── services/
-├── venv/
-├── database.py
-├── main.py
+├── backend/
+│
+├── frontend/
+│
+├── docs/
+│
+├── docker/
+│
 ├── README.md
-└── restaurante.db
+│
+└── .gitignore
 ```
 
 ---
 
-## 📌 Funcionalidades
+# ✅ Funcionalidades implementadas
 
-### Cardápio
+### Backend
 
-* Listar produtos
-* Buscar produto por ID
-* Buscar produtos pelo nome
+* API REST
+* Estrutura modular
+* Banco de dados PostgreSQL
+* Documentação da API
+* Endpoints organizados
+* Docker configurado
 
-### Cliente
+### Frontend
 
-* Consultar dados do cliente
-
-### Pedidos
-
-* Criar pedido
-* Buscar pedido por ID
-* Listar pedidos
-* Atualizar pedido
-* Excluir pedido
-* Filtrar pedidos por cliente
-* Filtrar pedidos por forma de pagamento
-* Filtrar pedidos por faixa de preço
+* Projeto React criado com Vite
+* Estrutura profissional de componentes
+* Dashboard inicial
+* Layout base da aplicação
+* Organização por páginas e componentes
 
 ---
 
-## ✅ Recursos implementados
+# 🚧 Funcionalidades em desenvolvimento
 
-* API REST com FastAPI
-* Validação de dados utilizando Pydantic
-* Documentação automática com Swagger
-* Integração com banco de dados SQLite
-* Respostas tipadas (`response_model`)
-* Tratamento de erros utilizando `HTTPException`
-* Organização do projeto em módulos (`routes`, `models` e `services`)
+* Login de usuários
+* Autenticação JWT
+* Cadastro de produtos
+* Controle de estoque
+* Gestão de clientes
+* Gestão de pedidos
+* Dashboard administrativo
+* Relatórios
+* Upload de imagens
+* Integração completa entre React e Django
+* Deploy da aplicação
 
 ---
 
-## ▶️ Como executar
+# ▶️ Como executar
 
-1. Clone o repositório.
-
-2. Crie um ambiente virtual:
+## Backend
 
 ```bash
-python -m venv venv
+cd backend
 ```
 
-3. Ative o ambiente virtual.
-
-Windows:
+Ative o ambiente virtual:
 
 ```bash
 venv\Scripts\activate
 ```
 
-4. Instale as dependências:
+Execute o servidor:
 
 ```bash
-pip install fastapi uvicorn pydantic
-```
-
-5. Execute a aplicação:
-
-```bash
-uvicorn main:app --reload
+python manage.py runserver
 ```
 
 ---
 
-## 📖 Documentação
+## Frontend
 
-Após iniciar a aplicação, acesse:
-
-Swagger:
-
-http://127.0.0.1:8000/docs
-
-Redoc:
-
-http://127.0.0.1:8000/redoc
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
-## 🎯 Próximas melhorias
+# 📖 Documentação da API
 
-* React consumindo a API
-* Deploy da aplicação
-* PostgreSQL
-* Docker
-* Autenticação de usuários
-* Django REST Framework
-* Dashboard administrativo
+Após iniciar o backend, a documentação poderá ser acessada pelo Swagger/OpenAPI.
 
 ---
 
-## 👨‍💻 Autor
+# 🎯 Objetivos do projeto
+
+* Desenvolver uma aplicação Full Stack moderna.
+* Consolidar conhecimentos em Python, Django e React.
+* Aplicar boas práticas de arquitetura e organização de código.
+* Construir um projeto de alto nível para portfólio.
+* Evoluir futuramente para um SaaS comercial.
+
+---
+
+# 📈 Roadmap
+
+* [x] Estrutura inicial do backend
+* [x] API REST
+* [x] Docker
+* [x] PostgreSQL
+* [x] Projeto React com Vite
+* [x] Dashboard inicial
+* [ ] React Router
+* [ ] Integração com API
+* [ ] Autenticação JWT
+* [ ] Cadastro de produtos
+* [ ] Gestão de pedidos
+* [ ] Dashboard completo
+* [ ] Deploy
+* [ ] Versão SaaS
+
+---
+
+# 👨‍💻 Autor
 
 **Renato da Silva Araujo**
 
-Projeto desenvolvido como parte dos estudos em desenvolvimento Backend com Python, FastAPI e APIs REST, com foco na construção de um portfólio profissional.
+Projeto desenvolvido como parte da minha evolução profissional em Desenvolvimento Full Stack, com foco em Python, Django, React e arquitetura moderna de software.
 
-## 🚧 Status do Projeto
-
-**Em desenvolvimento.**
-
-Este projeto faz parte da minha jornada de aprendizado em Desenvolvimento Backend com Python.
-
-Novas funcionalidades estão sendo implementadas continuamente, incluindo melhorias na arquitetura, integração com React, migração para PostgreSQL, autenticação, deploy e, futuramente, uma versão completa utilizando Django e Django REST Framework.
-
-O objetivo é evoluir este projeto gradualmente até transformá-lo em uma aplicação Full Stack moderna e pronta para produção.
+O objetivo é construir uma aplicação robusta, escalável e pronta para servir como projeto de portfólio e futura base para um produto comercial.
