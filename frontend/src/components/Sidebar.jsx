@@ -1,11 +1,13 @@
-function Sidebar () {
+import { Link } from "react-router-dom";
+
+function Sidebar() {
   return (
     <aside
-      stylle={{
+      style={{
         width: "220px",
         background: "#374151",
         color: "white",
-        mainHeight: "100vh",
+        minHeight: "100vh",
         padding: "20px",
       }}
     >
@@ -13,23 +15,24 @@ function Sidebar () {
 
       <br />
 
-      <p>🏠 Dashboard</p>
+      {/* Usamos o componente Link e a propriedade 'to' apontando para a rota */}
+      <p><Link to="/" style={{ color: "white", textDecoration: "none" }}>🏠 Dashboard</Link></p>
 
       <br />
 
-      <p>📦 Produtos</p>
+      <p><Link to="/products" style={{ color: "white", textDecoration: "none" }}>📦 Produtos</Link></p>
 
       <br />
 
-      <p>🛒Pedidos</p>
+      <p><Link to="/orders" style={{ color: "white", textDecoration: "none" }}>🛒 Pedidos</Link></p>
 
       <br />
 
-      <p>👥Clientes</p>
+      <p><Link to="/customers" style={{ color: "white", textDecoration: "none" }}>👥 Clientes</Link></p>
 
       <br />
 
-      <p>📊 Relatórios</p>
+      <p><Link to="/reports" style={{ color: "white", textDecoration: "none" }}>📊 Relatórios</Link></p>
     </aside>
   );
 }

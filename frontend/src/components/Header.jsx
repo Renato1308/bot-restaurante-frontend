@@ -1,4 +1,4 @@
-function Header () {
+function Header() {
   return (
     <header
       style={{
@@ -6,7 +6,7 @@ function Header () {
         background: "#1f2937",
         color: "white",
         display: "flex",
-        alignItens: "center",
+        alignItems: "center", // 👈 Corrigido aqui (era alignItens)
         padding: "0 30px",
       }}
     >

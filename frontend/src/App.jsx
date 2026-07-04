@@ -1,18 +1,7 @@
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
-import Dashboard from "./pages/Dashboard";
+import AppRoutes from "./routes/AppRoutes"; 
 
 function App() {
-  return (
-    <>
-      <Header />
-
-      <div style={{ display: "flex" }}>
-        <Sidebar />
-        <Dashboard />
-      </div>
-    </>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
