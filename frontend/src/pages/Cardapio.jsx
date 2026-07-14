@@ -11,7 +11,7 @@ function Cardapio() {
     const buscarCardapio = async () => {
       try {
         setCarregando(true);
-        const resposta = await fetch("https://defog-politely-directly.ngrok-free.dev -> http://localhost:8000");
+        const resposta = await fetch("https://defog-politely-directly.ngrok-free.dev");
         
         if (!resposta.ok) {
           throw new Error("Não foi possível carregar o cardápio.");
