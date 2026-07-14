@@ -1,4 +1,4 @@
-import Chatbot from "./pages/chatbot";
+import Chatbot from "./pages/Chatbot";
 import Cardapio from "./pages/Cardapio";
 import React, { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
