@@ -3,7 +3,6 @@ import Cardapio from "./pages/Cardapio";
 import React, { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import './App.css';
-
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   // 1. Estado para controlar se o cardápio deve ser exibido ou não
