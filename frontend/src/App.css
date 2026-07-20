@@ -102,3 +102,10 @@
   padding: 60px 20px;
   text-align: center;  
 }
+
+/* Garante exibição do cardápio em dispositivos móveis */
+.info-section {
+  width: 100%;
+  display: block;
+  clear: both;
+}
