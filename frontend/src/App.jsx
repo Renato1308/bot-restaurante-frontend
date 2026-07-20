@@ -1,4 +1,4 @@
-// 1. IMPORTAÇÕES: Trazendo od componentes externos e ícones necessários
+// 1. IMPORTAÇÕES: Trazendo os componentes externos e ícones necessários
 import Chatbot from "./pages/Chatbot";
 import Cardapio from "./pages/Cardapio";
 import React, { useState } from 'react';
@@ -8,7 +8,7 @@ import './styles/sobreNos.css';
 import './styles/contato.css';
 
 function App() {
-  // 2. ESTADOS: Controlam o que abre e fecha na teladinamicamente
+  // 2. ESTADOS: Controlam o que abre e fecha na tela dinamicamente
   const [isChatOpen, setIsChatOpen] = useState(false); // Abre/fecha o chat flutuante
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Abre/fecha a seção do cardápio
 
@@ -21,14 +21,12 @@ function App() {
           <div className="logo"> 🎒 Renato's Bistrô</div>
           <ul className="nav-links">
             <li>
-              {/* Ao clicar,força o estado do cardápio a ser verdadeiro (true) */}
               <a href="#menu" onClick={() => setIsMenuOpen(true)}>Cardápio</a>
             </li>
             <li>
               <a href="#sobre-nos">Sobre Nós</a>
             </li>
             <li>
-              {/* Ajustando o link para apontar perfeitamente para o ID da seção de contato */}
               <a href="#contato">Contato</a>
             </li>
           </ul>
@@ -48,7 +46,7 @@ function App() {
         </div>
       </header>
 
-      {/* 4.SEÇÃO DO CARDÁPIO: Só renderiza na tela se o estado isMenuOpen for true */}
+      {/* 4. SEÇÃO DO CARDÁPIO: Só renderiza na tela se o estado isMenuOpen for true */}
       {isMenuOpen && (
         <section id="menu" className="info-section">
           <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 20px' }}>
@@ -74,21 +72,21 @@ function App() {
       <section id="sobre-nos" className="sobre-secao">
         <div className="sobre-container">
 
-          <div className="sobre-imagens">
-            <div className="imagem-wrapper principal">
-              <img
-                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80"
-                alt="Cozinha do Renato's Bistrô"
-              />  
-            </div>
-            <div className="imagem-wrapper secundaria">
-              <img
-                src="https://images.unsplash.com/photo-141425077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80"
-                alt="Ambiente do Restaurante"
-              />  
-            </div>
-          </div>
-
+         <div className="sobre-imagens">
+           <div className="imagem-wrapper principal">
+             <img
+               src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80"
+               alt="Cozinha do Renato's Bistrô"
+             />  
+           </div>
+           <div className="imagem-wrapper secundaria">
+             <img
+               src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&auto=format&fit=crop&q=80"
+               alt="Ambiente do Restaurante"
+             />  
+           </div>
+         </div>
+         
           <div className="sobre-conteudo">
             <span className="sobre-subtitulo">Nossa História</span>
             <h2>Paixão pela gastronomia, respeito aos ingredientes</h2>
@@ -108,7 +106,7 @@ function App() {
                 <strong>100% Artesanal</strong>
                 <p>Molhos, misturas e massas feitas na casa.</p>
               </div>
-              <div className="direncial-item">
+              <div className="diferencial-item">
                 <strong>Ingredientes Locais</strong>
                 <p>Apoio aos produtores da nossa região.</p>
               </div>
@@ -145,7 +143,7 @@ function App() {
           </div>
 
           {/* Coluna da Direita: Formulário Fictício para Layout */}
-          <div className="contato-formulário">
+          <div className="contato-formulario">
             <h3>Envie uma mensagem</h3>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="form-grupo">
@@ -188,7 +186,7 @@ function App() {
           zIndex: 999,
           borderRadius: "12px",
           overflow: "hidden",
-          boxshadow: "0 8px 30px rgba(0,0,0,0.15)"
+          boxShadow: "0 8px 30px rgba(0,0,0,0.15)" 
         }}>
           <Chatbot />
         </div>  

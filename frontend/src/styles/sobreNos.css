@@ -1,116 +1,114 @@
-/* ==================== SEÇÃO CONTATO ==================== */
-.contato-secao {
-  padding: 80px 7%;
-  background-color: #ffffff;
-  color: #333333;
+/* ==================== SEÇÃO SOBRE NÓS ==================== */
+.sobre-secao {
+  padding: 80px 7% !important;
+  background-color: #fcfbfa !important;
+  color: #333333 !important;
+  display: block !important;
 }
 
-.contato-container {
-  display: flex;
-  gap: 60px;
-  max-width: 1200px;
-  margin: 0 auto;
+.sobre-container {
+  display: flex !important;
+  flex-direction: row !important; /* Força ficar lado a lado no PC */
+  align-items: center !important;
+  gap: 60px !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
 }
 
-.contato-info {
-  flex: 1;
+.sobre-imagens {
+  flex: 1 !important;
+  position: relative !important;
+  display: flex !important;
+  gap: 20px !important;
 }
 
-.contato-subtitulo {
-  color: #c2593f;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 10px;
+.imagem-wrapper {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
 }
 
-.contato-info h2 {
-  font-size: 2.3rem;
-  margin-bottom: 30px;
-  color: #222;
+.imagem-wrapper img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
 }
 
-.info-bloco {
-  margin-bottom: 25px;
+.imagem-wrapper.principal {
+  width: 60% !important;
+  height: 400px !important;
 }
 
-.info-bloco strong {
-  display: block;
-  font-size: 1.1rem;
-  color: #222;
-  margin-bottom: 5px;
+.imagem-wrapper.secundaria {
+  width: 50% !important;
+  height: 300px !important;
+  margin-top: 60px !important;
 }
 
-.info-bloco p {
-  color: #666;
-  margin: 2px 0;
+.sobre-conteudo {
+  flex: 1 !important;
 }
 
-.contato-formulario {
-  flex: 1;
-  background-color: #fcfbfa;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+.sobre-subtitulo {
+  color: #c2593f !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  display: block !important;
+  margin-bottom: 10px !important;
 }
 
-.contato-formulario h3 {
-  font-size: 1.5rem;
-  margin-bottom: 25px;
-  color: #222;
+.sobre-conteudo h2 {
+  font-size: 2.5rem !important;
+  line-height: 1.2 !important;
+  margin-bottom: 25px !important;
+  color: #222 !important;
 }
 
-.form-grupo {
-  margin-bottom: 20px;
+.sobre-conteudo p {
+  font-size: 1.05rem !important;
+  line-height: 1.6 !important;
+  color: #555 !important;
+  margin-bottom: 20px !important;
 }
 
-.form-grupo label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #444;
+.sobre-diferenciais {
+  display: flex !important;
+  gap: 30px !important;
+  margin-top: 30px !important;
+  border-top: 1px solid #e8e5e1 !important;
+  padding-top: 25px !important;
 }
 
-.form-grupo input,
-.form-grupo textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e8e5e1;
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: #fff;
-  transition: border-color 0.3s;
+.diferencial-item {
+  flex: 1 !important;
 }
 
-.form-grupo input:focus,
-.form-grupo textarea:focus {
-  outline: none;
-  border-color: #c2593f;
+.diferencial-item strong {
+  color: #222 !important;
+  font-size: 1.1rem !important;
+  display: block !important;
+  margin-bottom: 5px !important;
 }
 
-.form-botao {
-  width: 100%;
-  padding: 14px;
-  background-color: #0b2545;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.diferencial-item p {
+  font-size: 0.95rem !important;
+  color: #666 !important;
 }
 
-.form-botao:hover {
-  background-color: #134074;
-}
-
-@media (max-width: 768px) {
-  .contato-container {
-    flex-direction: column;
-    gap: 40px;
+/* Regra apenas para telas menores (celular) */
+@media (max-width: 968px) {
+  .sobre-container {
+    flex-direction: column-reverse !important;
+    gap: 40px !important;
+  }
+  
+  .imagem-wrapper.principal, 
+  .imagem-wrapper.secundaria {
+    width: 100% !important;
+    height: 250px !important;
+    margin-top: 0 !important;
   }
 }
