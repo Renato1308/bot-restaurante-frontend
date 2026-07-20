@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import List, Optional
 
 # Desativa os avisos chatos do urllib3 no terminal por conta do SSL desativado
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -31,7 +32,7 @@ app.add_middleware(
 )
 
 # Chave de API direta do seu Gemini
-API_KEY = ""
+API_KEY = "AQ.Ab8RN6LZzXtXPt4DnwsNNubU8Reqd5SHDCZY2alh-bkDp9wp4Q"
 
 # 4. Define as instruções de comportamento do bot e o cardápio oficial
 INSTRUCOES_DO_SISTEMA = """
@@ -50,9 +51,38 @@ Regras de comportamento:
 - Responda de forma curta e direta para o chat não ficar poluído.
 """
 
-# 5. Define a estrutura de dados que o React vai enviar ao Python
+# Caminho absoluto para garantir o acesso ao arquivo JSON no Windows
+DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
+CAMINHO_JSON = os.path.join(DIRETORIO_ATUAL, "data", "cardapio.json")
+
+# Modelos de dados do Pydantic
 class MensagemUsuario(BaseModel):
     texto: str
+
+class ItemCardapio(BaseModel):
+    id: int
+    nome: str
+    categoria: str
+    preco: float
+
+# Funções auxiliares para manipulação do cardapio.json
+def ler_json():
+    if not os.path.exists(CAMINHO_JSON):
+        return []
+    try:
+        with open(CAMINHO_JSON, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Erro ao ler arquivo JSON: {e}")
+        return []
+
+def salvar_json(dados):
+    try:
+        os.makedirs(os.path.dirname(CAMINHO_JSON), exist_ok=True)
+        with open(CAMINHO_JSON, "w", encoding="utf-8") as f:
+            json.dump(dados, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(f"Erro ao salvar arquivo JSON: {e}")
 
 # Importação e inclusão das rotas adicionais
 try:
@@ -70,28 +100,35 @@ try:
 except ImportError as e:
     print(f"Aviso ao carregar sub-rotas: {e}")
 
-# Rotas de teste
+# Rotas do sistema
 @app.get("/")
 def home():
     return {"mensagem": "Renato criou sua primeira API"}
 
+# Rota para cadastrar novos itens direto no cardapio.json
+@app.post("/cardapio", response_model=ItemCardapio)
+def criar_item(novo_item: ItemCardapio):
+    cardapio_atual = ler_json()
+    cardapio_atual.append(novo_item.dict())
+    salvar_json(cardapio_atual)
+    return novo_item
+
 @app.get("/resumo/{produto_id}")    
 def resumo_pedido(produto_id: int):
     try:
-        with open("data/cardapio.json", "r", encoding="utf-8") as arquivo:
-            dados = json.load(arquivo)
-            for produto in dados:
-                if produto["id"] == produto_id:
-                    taxa_entrega = 8.0
-                    return {
-                        "cliente": "Renato",
-                        "produto": produto["nome"],
-                        "valor": produto["preco"],
-                        "taxa_entrega": taxa_entrega,
-                        "total": produto["preco"] + taxa_entrega
-                    }
-    except FileNotFoundError:
-        return {"erro": "Arquivo cardapio.json não encontrado"}
+        dados = ler_json()
+        for produto in dados:
+            if produto["id"] == produto_id:
+                taxa_entrega = 8.0
+                return {
+                    "cliente": "Renato",
+                    "produto": produto["nome"],
+                    "valor": produto["preco"],
+                    "taxa_entrega": taxa_entrega,
+                    "total": produto["preco"] + taxa_entrega
+                }
+    except Exception:
+        return {"erro": "Problema ao processar o resumo do pedido"}
     return {"erro": "Produto não encontrado"}
     
 @app.get("/carrinho")
@@ -104,13 +141,8 @@ def carrinho():
 
 @app.post("/chat")
 def responder_chat(dados: MensagemUsuario):
-    # Endpoint padrão e estável com a sua chave nova
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
-    
-    headers = {
-        "Content-Type": "application/json"
-    }
-    
+    headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [
             {
@@ -120,16 +152,13 @@ def responder_chat(dados: MensagemUsuario):
             }
         ]
     }
-    
     try:
         resposta = requests.post(url, headers=headers, json=payload, verify=False, timeout=15.0)
-        
         if resposta.status_code == 200:
             resultado_json = resposta.json()
             texto_resposta = resultado_json['candidates'][0]['content']['parts'][0]['text']
             return {"resposta": texto_resposta}
         else:
             return {"resposta": f"Erro na API do Google (Código {resposta.status_code})."}
-            
     except Exception as e:
         return {"resposta": "Não consegui me conectar aos servidores."}

@@ -1,0 +1,58 @@
+/* Adicione isso no fim do seu Cardapio.css */
+
+/* Área dos botões de categoria */
+.categoria-filtros {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.filtro-btn {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.filtro-btn:hover {
+  background: #f5f5f5;
+  border-color: #d35400;
+  color: #d35400;
+}
+
+.filtro-btn.ativo {
+  background: #d35400;
+  color: #ffffff;
+  border-color: #d35400;
+}
+
+/* Container da Imagem do Prato */
+.card-image-wrapper {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card-item:hover .card-image {
+  transform: scale(1.05); /* Efeito de zoom suave na foto ao passar o mouse */
+}
+
+.card-preco-label {
+  font-size: 0.85rem;
+  color: #999;
+  text-transform: uppercase;
+}

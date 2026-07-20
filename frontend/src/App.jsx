@@ -1,59 +1,173 @@
+// 1. IMPORTAÇÕES: Trazendo od componentes externos e ícones necessários
 import Chatbot from "./pages/Chatbot";
 import Cardapio from "./pages/Cardapio";
 import React, { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import './App.css';
+import './styles/sobreNos.css';
+import './styles/contato.css';
+
 function App() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  // 1. Estado para controlar se o cardápio deve ser exibido ou não
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // 2. ESTADOS: Controlam o que abre e fecha na teladinamicamente
+  const [isChatOpen, setIsChatOpen] = useState(false); // Abre/fecha o chat flutuante
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Abre/fecha a seção do cardápio
 
   return (
     <div className="landing-page">
+
+      {/* 3. HERO-SECTION: O topo do site (Banner principal com a barra de navegação) */}
       <header className="hero-section">
         <nav className="navbar">
-          <div className="logo">🎒 Renato's Bistrô</div>
+          <div className="logo"> 🎒 Renato's Bistrô</div>
           <ul className="nav-links">
-            {/* 2. Ao clicar no link do topo, ativa o cardápio */}
             <li>
+              {/* Ao clicar,força o estado do cardápio a ser verdadeiro (true) */}
               <a href="#menu" onClick={() => setIsMenuOpen(true)}>Cardápio</a>
             </li>
-            <li><a href="about">Sobre Nós</a></li>
-            <li><a href="#contact">Contato</a></li>
+            <li>
+              <a href="#sobre-nos">Sobre Nós</a>
+            </li>
+            <li>
+              {/* Ajustando o link para apontar perfeitamente para o ID da seção de contato */}
+              <a href="#contato">Contato</a>
+            </li>
           </ul>
         </nav>
 
+        {/* Conteúdo de impacto no centro do banner inicial */}
         <div className="hero-content">
           <h1>O verdadeiro sabor da culinária artesanal</h1>
           <p>Ingredientes frescos, receitas exclusivas e um toque de amor em cada prato.</p>
-          {/* 3. Ao clicar no botão principal, ativa o cardápio também */}
-          <a 
-            href="#menu" 
-            className="cta-button" 
+          <a
+            href="#menu"
+            className="cta-button"
             onClick={() => setIsMenuOpen(true)}
           >
             Ver Cardápio Digital
-          </a>
+          </a>  
         </div>
       </header>
 
-      {/* 4. O cardápio só aparece se "isMenuOpen" for verdadeiro (true) */}
+      {/* 4.SEÇÃO DO CARDÁPIO: Só renderiza na tela se o estado isMenuOpen for true */}
       {isMenuOpen && (
         <section id="menu" className="info-section">
           <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 20px' }}>
-            {/* Botão para o cliente fechar o cardápio se quiser voltar para a home */}
-            <button 
+            <button
               onClick={() => setIsMenuOpen(false)}
-              style={{ padding: '8px 16px', background: '#0b2545', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+              style={{
+                padding: '8px 16px',
+                background: '#0b2545',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
             >
-              Fechar Cardápio ✕
+              Fechar Cardápio X
             </button>
           </div>
-          <Cardapio /> 
+          <Cardapio />
         </section>
       )}
 
-      {/* Botão Flutuante do Chatbot */}
+      {/* 5. SEÇÃO SOBRE NÓS: Seção fixa na Landing Page para contar a história */}
+      <section id="sobre-nos" className="sobre-secao">
+        <div className="sobre-container">
+
+          <div className="sobre-imagens">
+            <div className="imagem-wrapper principal">
+              <img
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80"
+                alt="Cozinha do Renato's Bistrô"
+              />  
+            </div>
+            <div className="imagem-wrapper secundaria">
+              <img
+                src="https://images.unsplash.com/photo-141425077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80"
+                alt="Ambiente do Restaurante"
+              />  
+            </div>
+          </div>
+
+          <div className="sobre-conteudo">
+            <span className="sobre-subtitulo">Nossa História</span>
+            <h2>Paixão pela gastronomia, respeito aos ingredientes</h2>
+            <p>
+              O <strong>Renato's Bistrô</strong> nasceu do sonho de transformar refeições simples em momentos inesquecíveis.
+              Fundado em 2024, nosso compromisso sempre foi unir a alta gastronomia a um ambiente
+              acolhedor e descontraído.
+            </p>
+            <p>
+              Cada prato do nosso menu - desde o nosso famoso Xis Coração até as massas de longa fermentação
+              das nossas pizzas - é preparado artesanalmente com ingredientes selecionados de produtores locais.
+              Aqui, nós não servimos apenas comida; nós compartilhamos nossa paixão.
+            </p>
+
+            <div className="sobre-diferenciais">
+              <div className="diferencial-item">
+                <strong>100% Artesanal</strong>
+                <p>Molhos, misturas e massas feitas na casa.</p>
+              </div>
+              <div className="direncial-item">
+                <strong>Ingredientes Locais</strong>
+                <p>Apoio aos produtores da nossa região.</p>
+              </div>
+            </div> 
+          </div>
+
+        </div>
+      </section>
+
+      {/* 6. SEÇÃO DE CONTATO: Nova área com informações fictícias e formulário */}
+      <section id="contato" className="contato-secao">
+        <div className="contato-container">
+
+          {/* Coluna da Esquerda: Informações Práticas */}
+          <div className="contato-info">
+            <span className="contato-subtitulo">Fale Conosco</span>
+            <h2>Venha nos visitar ou faça seu pedido.</h2>
+
+            <div className="info-bloco">
+              <strong>📍 Endereço</strong>
+              <p>Rua dos Sabores, 742 - Bairro Gourmet, Porto Alegre - RS</p>
+            </div>
+
+            <div className="info-bloco">
+              <strong>📞 Telefone / WhatsApp</strong>
+              <p>(51) 99999-8888 / (51) 3333-2222</p>
+            </div>
+
+            <div className="info-bloco">
+              <strong>🕕 Horário de Funcionamento</strong>
+              <p>Terça a Domingo: 18h às 23h30</p>
+              <p>Sábados e Domingos: Almoço das 11h30 às 15h</p>
+            </div>          
+          </div>
+
+          {/* Coluna da Direita: Formulário Fictício para Layout */}
+          <div className="contato-formulário">
+            <h3>Envie uma mensagem</h3>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <div className="form-grupo">
+                <label>Nome</label>
+                <input type="text" placeholder="Seu nome completo" required />
+              </div>
+              <div className="form-grupo">
+                <label>E-mail</label>
+                <input type="email" placeholder="seuemail@exemplo.com" required />
+              </div>
+              <div className="form-grupo">
+                <label>Mensagem</label>
+                <textarea rows="4" placeholder="Em que podemos ajudar? (Dúvidas, eventos, elogios...)" required></textarea>
+              </div>
+              <button type="submit" className="form-botao">Enviar Mensagem</button>      
+            </form>
+          </div>
+
+        </div>
+      </section> 
+
+      {/* 7. BOTÃO FLUTUANTE DO CHATBOT */}
       <button
         className="floating-chat-button"
         onClick={() => setIsChatOpen(!isChatOpen)}
@@ -62,7 +176,7 @@ function App() {
         {isChatOpen ? <X size={28} /> : <MessageSquare size={28} />}
       </button>
 
-      {/* Janela do Chatbot */}
+      {/* 8. JANELA CONTAINER DO CHATBOT */}
       {isChatOpen && (
         <div style={{
           position: "fixed",
@@ -74,11 +188,11 @@ function App() {
           zIndex: 999,
           borderRadius: "12px",
           overflow: "hidden",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.15)"
+          boxshadow: "0 8px 30px rgba(0,0,0,0.15)"
         }}>
           <Chatbot />
-        </div>
-      )}
+        </div>  
+      )}        
     </div>
   );
 }
