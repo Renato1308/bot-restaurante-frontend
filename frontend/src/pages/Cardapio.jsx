@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/cardapio.css';
+import '../styles/Cardapio.css';
 
 // 1. SEUS ITENS DO CARDÁPIO
 const itensCardapio = [
