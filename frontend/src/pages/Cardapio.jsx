@@ -1,76 +1,88 @@
-import React, { useState, useEffect } from "react";
-import "../styles/Cardapio.css"; // Garanta que este caminho está exatamente assim
+import React, { useState } from 'react';
+import '../styles/cardapio.css';
 
-export default function Cardapio() {
-  const [itens, setItens] = useState([]);
-  const [categoriaAtiva, setCategoriaAtiva] = useState("Todos");
+// 1. SEUS ITENS DO CARDÁPIO
+const itensCardapio = [
+  { 
+    id: 1, 
+    nome: 'Pizza de Calabresa', 
+    categoria: 'Pizza', 
+    descricao: 'Massa artesanal, calabresa defumada e queijo derretido.', 
+    preco: 'R$ 45,00', 
+    imagem: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80' 
+  },
+  { 
+    id: 2, 
+    nome: 'Xis Coração', 
+    categoria: 'Lanche', 
+    descricao: 'Clássico gaúcho com coraçãozinho na chapa, maionese temperada e milho.', 
+    preco: 'R$ 28,00', 
+    imagem: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&auto=format&fit=crop&q=80' 
+  },
+  { 
+    id: 3, 
+    nome: 'Hambúrguer Artesanal', 
+    categoria: 'Hambúrguer', 
+    descricao: 'Blend bovino de 180g, queijo cheddar, bacon e molho especial.', 
+    preco: 'R$ 35,00', 
+    imagem: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80' 
+  }
+];
 
-  useEffect(() => {
-    fetch("http://localhost:8000/cardapio")
-      .then((res) => res.json())
-      .then((data) => setItens(data))
-      .catch((err) => console.error("Erro ao buscar cardápio:", err));
-  }, []);
+// 2. SUAS CATEGORIAS
+const categorias = ['Pizza', 'Lanche', 'Hambúrguer'];
 
-  // Lista de categorias únicas para os botões de filtro
-  const categorias = ["Todos", "lanches", "Pizzas", "Hambúrgueres"];
-
-  // Filtra os itens com base na categoria selecionada
-  const itensFiltrados = categoriaAtiva === "Todos"
-    ? itens
-    : itens.filter(item => item.categoria === categoriaAtiva);
+function Cardapio() {
+  const [categoriaAtiva, setCategoriaAtiva] = useState('Pizza');
 
   return (
     <div className="cardapio-container">
-      <header className="cardapio-header">
-        <h2>🎒 Nosso Cardápio Digital</h2>
-        <p>Massas artesanais, vinhos finos e experiências inesquecíveis</p>
-      </header>
+      
+      <div className="cardapio-header">
+        <span className="cardapio-subtitulo">Nosso Menu</span>
+        <h2>Explore nossas delícias artesanais</h2>
+        <p>Cada prato é uma experiência única, preparada com ingredientes selecionados e muito carinho.</p>
+      </div>
 
-      {/* Botões de Filtro por Categoria */}
+      {/* Área dos botões de categoria com as classes que você curtiu */}
       <div className="categoria-filtros">
-        {categorias.map((cat) => (
-          <button
-            key={cat}
-            className={`filtro-btn ${categoriaAtiva === cat ? "ativo" : ""}`}
-            onClick={() => setCategoriaAtiva(cat)}
+        {categorias.map(categoria => (
+          <button 
+            key={categoria}
+            className={`filtro-btn ${categoriaAtiva === categoria ? 'ativo' : ''}`}
+            onClick={() => setCategoriaAtiva(categoria)}
           >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            {categoria}
           </button>
         ))}
       </div>
 
-      {/* Grid de Pratos */}
+      {/* Grid de Itens */}
       <div className="cardapio-grid">
-        {itensFiltrados.map((item) => (
-          <div key={item.id} className="card-item">
-            {/* Se o seu backend enviar uma URL de imagem, ela aparece aqui. 
-                Caso contrário, exibe uma imagem padrão de comida deliciosa */}
-            <div className="card-image-wrapper">
-              <img 
-                src={item.imagem_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"} 
-                alt={item.nome} 
-                className="card-image"
-              />
-            </div>
-
-            <div className="card-info">
-              <span className="card-categoria">{item.categoria}</span>
-              <h3>{item.nome}</h3>
-              <p className="card-descricao">
-                {item.descricao || "Sem descrição disponível no momento."}
-              </p>
-              
-              <div className="card-footer">
-                <span className="card-preco-label">Preço</span>
-                <span className="card-preco">
-                  {Number(item.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </span>
+        {itensCardapio
+          .filter(item => item.categoria === categoriaAtiva)
+          .map(item => (
+            <div key={item.id} className="card-item">
+              <div className="card-image-wrapper">
+                <img className="card-image" src={item.imagem} alt={item.nome} loading="lazy" />
+              </div>
+              <div className="card-info">
+                <h3>{item.nome}</h3>
+                <p>{item.descricao}</p>
+                <div className="card-footer">
+                  <div>
+                    <span className="card-preco-label">A partir de</span>
+                    <strong className="card-preco">{item.preco}</strong>
+                  </div>
+                  <button className="card-btn-add">Adicionar</button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
+
     </div>
   );
 }
+
+export default Cardapio;
