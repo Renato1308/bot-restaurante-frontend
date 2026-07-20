@@ -8,20 +8,19 @@ import './styles/sobreNos.css';
 import './styles/contato.css';
 
 function App() {
-  // 2. ESTADOS: Controlam o que abre e fecha na tela dinamicamente
-  const [isChatOpen, setIsChatOpen] = useState(false); // Abre/fecha o chat flutuante
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Abre/fecha a seção do cardápio
+  // 2. ESTADOS: Controla apenas a abertura do Chatbot
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
     <div className="landing-page">
 
-      {/* 3. HERO-SECTION: O topo do site (Banner principal com a barra de navegação) */}
+      {/* 3. HERO-SECTION: O topo do site */}
       <header className="hero-section">
         <nav className="navbar">
           <div className="logo"> 🎒 Renato's Bistrô</div>
           <ul className="nav-links">
             <li>
-              <a href="#menu" onClick={() => setIsMenuOpen(true)}>Cardápio</a>
+              <a href="#menu">Cardápio</a>
             </li>
             <li>
               <a href="#sobre-nos">Sobre Nós</a>
@@ -36,57 +35,36 @@ function App() {
         <div className="hero-content">
           <h1>O verdadeiro sabor da culinária artesanal</h1>
           <p>Ingredientes frescos, receitas exclusivas e um toque de amor em cada prato.</p>
-          <a
-            href="#menu"
-            className="cta-button"
-            onClick={() => setIsMenuOpen(true)}
-          >
+          <a href="#menu" className="cta-button">
             Ver Cardápio Digital
           </a>  
         </div>
       </header>
 
-      {/* 4. SEÇÃO DO CARDÁPIO: Só renderiza na tela se o estado isMenuOpen for true */}
-      {isMenuOpen && (
-        <section id="menu" className="info-section">
-          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 20px' }}>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                padding: '8px 16px',
-                background: '#0b2545',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Fechar Cardápio X
-            </button>
-          </div>
-          <Cardapio />
-        </section>
-      )}
+      {/* 4. SEÇÃO DO CARDÁPIO: Sempre visível na Landing Page (Opção 1) */}
+      <section id="menu" className="info-section">
+        <Cardapio />
+      </section>
 
-      {/* 5. SEÇÃO SOBRE NÓS: Seção fixa na Landing Page para contar a história */}
+      {/* 5. SEÇÃO SOBRE NÓS: História e diferenciais */}
       <section id="sobre-nos" className="sobre-secao">
         <div className="sobre-container">
 
-         <div className="sobre-imagens">
-           <div className="imagem-wrapper principal">
-             <img
-               src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80"
-               alt="Cozinha do Renato's Bistrô"
-             />  
-           </div>
-           <div className="imagem-wrapper secundaria">
-             <img
-               src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&auto=format&fit=crop&q=80"
-               alt="Ambiente do Restaurante"
-             />  
-           </div>
-         </div>
-         
+          <div className="sobre-imagens">
+            <div className="imagem-wrapper principal">
+              <img
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80"
+                alt="Cozinha do Renato's Bistrô"
+              />  
+            </div>
+            <div className="imagem-wrapper secundaria">
+              <img
+                src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&auto=format&fit=crop&q=80"
+                alt="Ambiente do Restaurante"
+              />  
+            </div>
+          </div>
+          
           <div className="sobre-conteudo">
             <span className="sobre-subtitulo">Nossa História</span>
             <h2>Paixão pela gastronomia, respeito aos ingredientes</h2>
@@ -116,11 +94,11 @@ function App() {
         </div>
       </section>
 
-      {/* 6. SEÇÃO DE CONTATO: Nova área com informações fictícias e formulário */}
+      {/* 6. SEÇÃO DE CONTATO */}
       <section id="contato" className="contato-secao">
         <div className="contato-container">
 
-          {/* Coluna da Esquerda: Informações Práticas */}
+          {/* Informações Práticas */}
           <div className="contato-info">
             <span className="contato-subtitulo">Fale Conosco</span>
             <h2>Venha nos visitar ou faça seu pedido.</h2>
@@ -142,7 +120,7 @@ function App() {
             </div>          
           </div>
 
-          {/* Coluna da Direita: Formulário Fictício para Layout */}
+          {/* Formulário */}
           <div className="contato-formulario">
             <h3>Envie uma mensagem</h3>
             <form onSubmit={(e) => e.preventDefault()}>
