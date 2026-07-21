@@ -9,20 +9,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-# Desativa os avisos chatos do urllib3 no terminal por conta do SSL desativado
+# Desativa os avisos do urllib3 no terminal
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 1. Carrega as variáveis de ambiente (.env)
+# 1. Carrega as variáveis de ambiente (.env local)
 load_dotenv()
 
-# 2. Inicializa o FastAPI
+# 2. Busca a chave do Gemini de forma segura das variáveis de ambiente
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+# 3. Inicializa o FastAPI
 app = FastAPI(
     title=os.getenv("APP_NAME", "Restaurante do Renato"),
     description=os.getenv("DESCRIPTION", "Chatbot do Restaurante"),
     version=os.getenv("VERSION", "1.0.0")
 )
 
-# 3. Liberação de segurança (CORS) para o React conseguir conversar com o Python
+# 4. Liberação de segurança (CORS) para a Vercel e outros frontends
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,10 +34,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Chave de API direta do seu Gemini
-API_KEY = "AQ.Ab8RN6LZzXtXPt4DnwsNNubU8Reqd5SHDCZY2alh-bkDp9wp4Q"
-
-# 4. Define as instruções de comportamento do bot e o cardápio oficial
+# 5. Instruções do sistema e cardápio
 INSTRUCOES_DO_SISTEMA = """
 Você é o atendente virtual super educado e prestativo do "Renato's Bistro".
 Seu objetivo é ajudar os clientes a tirarem dúvidas sobre o cardápio e fazerem pedidos.
@@ -51,11 +51,11 @@ Regras de comportamento:
 - Responda de forma curta e direta para o chat não ficar poluído.
 """
 
-# Caminho absoluto para garantir o acesso ao arquivo JSON no Windows
+# Caminho do arquivo JSON
 DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
 CAMINHO_JSON = os.path.join(DIRETORIO_ATUAL, "data", "cardapio.json")
 
-# Modelos de dados do Pydantic
+# Modelos do Pydantic
 class MensagemUsuario(BaseModel):
     texto: str
 
@@ -65,7 +65,7 @@ class ItemCardapio(BaseModel):
     categoria: str
     preco: float
 
-# Funções auxiliares para manipulação do cardapio.json
+# Funções auxiliares para JSON
 def ler_json():
     if not os.path.exists(CAMINHO_JSON):
         return []
@@ -84,7 +84,7 @@ def salvar_json(dados):
     except Exception as e:
         print(f"Erro ao salvar arquivo JSON: {e}")
 
-# Importação e inclusão das rotas adicionais
+# Inclusão das rotas secundárias
 try:
     from routes.cardapio import router as cardapio_router
     from routes.pedidos import router as pedidos_router
@@ -105,7 +105,6 @@ except ImportError as e:
 def home():
     return {"mensagem": "Renato criou sua primeira API"}
 
-# Rota para cadastrar novos itens direto no cardapio.json
 @app.post("/cardapio", response_model=ItemCardapio)
 def criar_item(novo_item: ItemCardapio):
     cardapio_atual = ler_json()
@@ -130,7 +129,7 @@ def resumo_pedido(produto_id: int):
     except Exception:
         return {"erro": "Problema ao processar o resumo do pedido"}
     return {"erro": "Produto não encontrado"}
-    
+
 @app.get("/carrinho")
 def carrinho():
     itens = [
@@ -139,8 +138,13 @@ def carrinho():
     ]
     return {"itens": itens, "total": sum(item["preco"] for item in itens)}
 
+# Rota principal do Chatbot
 @app.post("/chat")
 def responder_chat(dados: MensagemUsuario):
+    # Verifica se a chave foi configurada no Render
+    if not API_KEY:
+        return {"resposta": "Erro interno: A chave GEMINI_API_KEY não foi encontrada nas variáveis de ambiente."}
+
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
     headers = {"Content-Type": "application/json"}
     payload = {
@@ -152,13 +156,16 @@ def responder_chat(dados: MensagemUsuario):
             }
         ]
     }
+    
     try:
-        resposta = requests.post(url, headers=headers, json=payload, verify=False, timeout=15.0)
+        resposta = requests.post(url, headers=headers, json=payload, timeout=15.0)
+        
         if resposta.status_code == 200:
             resultado_json = resposta.json()
             texto_resposta = resultado_json['candidates'][0]['content']['parts'][0]['text']
             return {"resposta": texto_resposta}
         else:
-            return {"resposta": f"Erro na API do Google (Código {resposta.status_code})."}
+            return {"resposta": f"Erro na API do Google (Código {resposta.status_code}). Verifique se a chave está ativa."}
+            
     except Exception as e:
-        return {"resposta": "Não consegui me conectar aos servidores."}
+        return {"resposta": f"Não consegui me conectar aos servidores do Google. Detalhes: {str(e)}"}
