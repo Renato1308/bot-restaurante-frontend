@@ -4,7 +4,9 @@ function Chatbot() {
   const [larguraJanela, setLarguraJanela] = useState(window.innerWidth);
   const fimDasMensagensRef = useRef(null);
 
-  // 1. OBRIGATÓRIO: Declarar a função auxiliar primeiro
+  // 1. Definição dinâmica da URL do Backend (Render no deploy / Localhost no dev)
+  const API_URL = import.meta.env.VITE_API_URL || "https://bot-restaurante-backend.onrender.com";
+
   const obterDataAtual = () => {
     return new Date().toLocaleString('en-US', {
       month: 'short',
@@ -16,7 +18,6 @@ function Chatbot() {
     });
   };
 
-  // 2. OBRIGATÓRIO: Criar o estado "mensagens" antes dos Hooks que o monitoram
   const [mensagens, setMensagens] = useState([
     {
       id: 1,
@@ -28,12 +29,10 @@ function Chatbot() {
 
   const [textoDigitado, setTextoDigitado] = useState("");
 
-  // 3. Monitor de rolagem (agora pode ler "mensagens" com segurança)
   useEffect(() => {
     fimDasMensagensRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [mensagens]);
 
-  // 4. Monitor de tamanho da tela
   useEffect(() => {
     const lidarComRedimensionamento = () => setLarguraJanela(window.innerWidth);
     window.addEventListener("resize", lidarComRedimensionamento);
@@ -65,8 +64,8 @@ function Chatbot() {
     }]);
 
     try {
-      // Alterado de 127.0.0.1 para localhost para contornar políticas de rede rígidas do Windows
-      const respostaServidor = await fetch("127.0.0.1:8000/chat", {
+      // CORRIGIDO: Agora usa a URL do Render com HTTPS
+      const respostaServidor = await fetch(`${API_URL}/chat`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json"
@@ -86,13 +85,12 @@ function Chatbot() {
         )
       );
     } catch (erro) {
-      // Exibe detalhadamente no console do navegador o motivo exato da recusa do fetch
       console.error("Erro detalhado ao conectar com a API:", erro);
       
       setMensagens((prev) =>
         prev.map((msg) =>
           msg.id === idMensagemDigitando
-            ? { ...msg, texto: `Não consegui me conectar ao servidor Python. Detalhes: ${erro.message}. Verifique se o backend está rodando em localhost:8000.` }
+            ? { ...msg, texto: `Não consegui me conectar ao servidor Python. Detalhes: ${erro.message}` }
             : msg
         )
       );
