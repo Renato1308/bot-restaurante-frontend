@@ -1,22 +1,17 @@
 import os
 import json
-import time
-import requests
-import urllib3
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from groq import Groq
 
-# Desativa os avisos do urllib3 no terminal
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# 1. Carrega as variáveis de ambiente (.env local)
+# 1. Carrega as variáveis do .env
 load_dotenv()
 
-# 2. Busca a chave do Gemini de forma segura das variáveis de ambiente
-API_KEY = os.getenv("GEMINI_API_KEY")
+# 2. Inicializa o cliente da Groq
+groq_api_key = os.getenv("GROQ_API_KEY")
+client = Groq(api_key=groq_api_key) if groq_api_key else None
 
 # 3. Inicializa o FastAPI
 app = FastAPI(
@@ -25,7 +20,7 @@ app = FastAPI(
     version=os.getenv("VERSION", "1.0.0")
 )
 
-# 4. Liberação de segurança (CORS) para a Vercel e outros frontends
+# 4. Liberação de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,7 +29,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 5. Instruções do sistema e cardápio
+# 5. Instruções do Atendente e Cardápio
 INSTRUCOES_DO_SISTEMA = """
 Você é o atendente virtual super educado e prestativo do "Renato's Bistro".
 Seu objetivo é ajudar os clientes a tirarem dúvidas sobre o cardápio e fazerem pedidos.
@@ -51,11 +46,9 @@ Regras de comportamento:
 - Responda de forma curta e direta para o chat não ficar poluído.
 """
 
-# Caminho do arquivo JSON
 DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
 CAMINHO_JSON = os.path.join(DIRETORIO_ATUAL, "data", "cardapio.json")
 
-# Modelos do Pydantic
 class MensagemUsuario(BaseModel):
     texto: str
 
@@ -65,7 +58,6 @@ class ItemCardapio(BaseModel):
     categoria: str
     preco: float
 
-# Funções auxiliares para JSON
 def ler_json():
     if not os.path.exists(CAMINHO_JSON):
         return []
@@ -84,7 +76,7 @@ def salvar_json(dados):
     except Exception as e:
         print(f"Erro ao salvar arquivo JSON: {e}")
 
-# Inclusão das rotas secundárias
+# Importação das sub-rotas
 try:
     from routes.cardapio import router as cardapio_router
     from routes.pedidos import router as pedidos_router
@@ -100,10 +92,9 @@ try:
 except ImportError as e:
     print(f"Aviso ao carregar sub-rotas: {e}")
 
-# Rotas do sistema
 @app.get("/")
 def home():
-    return {"mensagem": "Renato criou sua primeira API"}
+    return {"mensagem": "API do Renato's Bistro rodando com sucesso!"}
 
 @app.post("/cardapio", response_model=ItemCardapio)
 def criar_item(novo_item: ItemCardapio):
@@ -112,60 +103,23 @@ def criar_item(novo_item: ItemCardapio):
     salvar_json(cardapio_atual)
     return novo_item
 
-@app.get("/resumo/{produto_id}")    
-def resumo_pedido(produto_id: int):
-    try:
-        dados = ler_json()
-        for produto in dados:
-            if produto["id"] == produto_id:
-                taxa_entrega = 8.0
-                return {
-                    "cliente": "Renato",
-                    "produto": produto["nome"],
-                    "valor": produto["preco"],
-                    "taxa_entrega": taxa_entrega,
-                    "total": produto["preco"] + taxa_entrega
-                }
-    except Exception:
-        return {"erro": "Problema ao processar o resumo do pedido"}
-    return {"erro": "Produto não encontrado"}
-
-@app.get("/carrinho")
-def carrinho():
-    itens = [
-        {"nome": "Xis Coração", "preco": 32.0},
-        {"nome": "Pizza Calabreza", "preco": 45.0}
-    ]
-    return {"itens": itens, "total": sum(item["preco"] for item in itens)}
-
-# Rota principal do Chatbot
+# Rota principal do Chatbot - GROQ
 @app.post("/chat")
 def responder_chat(dados: MensagemUsuario):
-    # Verifica se a chave foi configurada no Render
-    if not API_KEY:
-        return {"resposta": "Erro interno: A chave GEMINI_API_KEY não foi encontrada nas variáveis de ambiente."}
+    if not client:
+        return {"resposta": "Erro: A chave GROQ_API_KEY não foi configurada no arquivo .env."}
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
-    headers = {"Content-Type": "application/json"}
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": f"Instruções do Sistema:\n{INSTRUCOES_DO_SISTEMA}\n\nCliente: {dados.texto}"}
-                ]
-            }
-        ]
-    }
-    
     try:
-        resposta = requests.post(url, headers=headers, json=payload, timeout=15.0)
-        
-        if resposta.status_code == 200:
-            resultado_json = resposta.json()
-            texto_resposta = resultado_json['candidates'][0]['content']['parts'][0]['text']
-            return {"resposta": texto_resposta}
-        else:
-            return {"resposta": f"Erro na API do Google (Código {resposta.status_code}). Verifique se a chave está ativa."}
-            
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": INSTRUCOES_DO_SISTEMA},
+                {"role": "user", "content": dados.texto}
+            ],
+            temperature=0.7,
+        )
+        return {"resposta": completion.choices[0].message.content}
+
     except Exception as e:
-        return {"resposta": f"Não consegui me conectar aos servidores do Google. Detalhes: {str(e)}"}
+        print(f"Erro na chamada da Groq: {e}")
+        return {"resposta": f"Erro ao conectar com a IA (Groq): {str(e)}"}

@@ -2,13 +2,13 @@
 import Chatbot from "./pages/Chatbot";
 import Cardapio from "./pages/Cardapio";
 import React, { useState } from 'react';
-import { MessageSquare, X } from 'lucide-react';
+import { MessageSquare, X, UtensilsCrossed } from 'lucide-react';
 import './App.css';
 import './styles/sobreNos.css';
 import './styles/contato.css';
 
 function App() {
-  // 2. ESTADOS: Controla apenas a abertura do Chatbot
+  // 2. ESTADOS: Controla a abertura do Chatbot
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
@@ -16,8 +16,14 @@ function App() {
 
       {/* 3. HERO-SECTION: O topo do site */}
       <header className="hero-section">
-        <nav className="navbar">
-          <div className="logo"> 🎒 Renato's Bistrô</div>
+        <nav className="navbar navbar-centered">
+          
+          {/* Logo Centralizado com ícone de gastronomia */}
+          <div className="logo-center">
+            <UtensilsCrossed className="logo-icon" size={32} />
+            <span className="brand-title">Renato's Bistrô</span>
+          </div>
+
           <ul className="nav-links">
             <li>
               <a href="#menu">Cardápio</a>
@@ -41,12 +47,12 @@ function App() {
         </div>
       </header>
 
-      {/* 4. SEÇÃO DO CARDÁPIO: Sempre visível na Landing Page (Opção 1) */}
+      {/* 4. SEÇÃO DO CARDÁPIO */}
       <section id="menu" className="info-section">
         <Cardapio />
       </section>
 
-      {/* 5. SEÇÃO SOBRE NÓS: História e diferenciais */}
+      {/* 5. SEÇÃO SOBRE NÓS */}
       <section id="sobre-nos" className="sobre-secao">
         <div className="sobre-container">
 
