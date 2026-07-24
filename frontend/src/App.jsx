@@ -16,14 +16,9 @@ function App() {
 
       {/* 3. HERO-SECTION: O topo do site */}
       <header className="hero-section">
-        <nav className="navbar navbar-centered">
+        <nav className="navbar">
           
-          {/* Logo Centralizado com ícone de gastronomia */}
-          <div className="logo-center">
-            <UtensilsCrossed className="logo-icon" size={32} />
-            <span className="brand-title">Renato's Bistrô</span>
-          </div>
-
+          {/* Menu de Links (ACIMA DO LOGO) */}
           <ul className="nav-links">
             <li>
               <a href="#menu">Cardápio</a>
@@ -35,6 +30,13 @@ function App() {
               <a href="#contato">Contato</a>
             </li>
           </ul>
+
+          {/* Logo Centralizado (ABAIXO DO MENU) */}
+          <div className="logo-center">
+            <UtensilsCrossed className="logo-icon" size={32} />
+            <span className="brand-title">Renato's Bistrô</span>
+          </div>
+
         </nav>
 
         {/* Conteúdo de impacto no centro do banner inicial */}
@@ -126,22 +128,36 @@ function App() {
             </div>          
           </div>
 
-          {/* Formulário */}
+          {/* Formulário Conectado ao E-mail com Redirecionamento Automático */}
           <div className="contato-formulario">
             <h3>Envie uma mensagem</h3>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form action="https://formsubmit.co/09914700d0036ac7738777a21a97e7b6" method="POST">
+              
+              <input type="hidden" name="_subject" value="Novo Contato - Renato's Bistrô!" />
+              <input type="hidden" name="_captcha" value="false" />
+              
+              {/* Redireciona o usuário automaticamente de volta para a sua página após o envio */}
+              <input 
+                type="hidden" 
+                name="_next" 
+                value={typeof window !== 'undefined' ? window.location.href : 'http://localhost:5173/'} 
+              />
+
               <div className="form-grupo">
                 <label>Nome</label>
-                <input type="text" placeholder="Seu nome completo" required />
+                <input type="text" name="Nome" placeholder="Seu nome completo" required />
               </div>
+
               <div className="form-grupo">
                 <label>E-mail</label>
-                <input type="email" placeholder="seuemail@exemplo.com" required />
+                <input type="email" name="E-mail" placeholder="seuemail@exemplo.com" required />
               </div>
+
               <div className="form-grupo">
                 <label>Mensagem</label>
-                <textarea rows="4" placeholder="Em que podemos ajudar? (Dúvidas, eventos, elogios...)" required></textarea>
+                <textarea name="Mensagem" rows="4" placeholder="Em que podemos ajudar? (Dúvidas, eventos, elogios...)" required></textarea>
               </div>
+
               <button type="submit" className="form-botao">Enviar Mensagem</button>      
             </form>
           </div>
@@ -153,25 +169,13 @@ function App() {
       <button
         className="floating-chat-button"
         onClick={() => setIsChatOpen(!isChatOpen)}
-        style={{ zIndex: 1000 }}
       >
         {isChatOpen ? <X size={28} /> : <MessageSquare size={28} />}
       </button>
 
       {/* 8. JANELA CONTAINER DO CHATBOT */}
       {isChatOpen && (
-        <div style={{
-          position: "fixed",
-          bottom: "85px",
-          right: "20px",
-          width: "400px",
-          maxWidth: "90vw",
-          height: "500px",
-          zIndex: 999,
-          borderRadius: "12px",
-          overflow: "hidden",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.15)" 
-        }}>
+        <div className="chat-window">
           <Chatbot />
         </div>  
       )}        
