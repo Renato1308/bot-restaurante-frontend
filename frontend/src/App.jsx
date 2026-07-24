@@ -128,7 +128,7 @@ function App() {
             </div>          
           </div>
 
-          {/* Formulário Conectado ao E-mail com Redirecionamento Automático */}
+          {/* Formulário Conectado ao E-mail com Redirecionamento Fixo */}
           <div className="contato-formulario">
             <h3>Envie uma mensagem</h3>
             <form action="https://formsubmit.co/09914700d0036ac7738777a21a97e7b6" method="POST">
@@ -136,11 +136,10 @@ function App() {
               <input type="hidden" name="_subject" value="Novo Contato - Renato's Bistrô!" />
               <input type="hidden" name="_captcha" value="false" />
               
-              {/* Redireciona o usuário automaticamente de volta para a sua página após o envio */}
               <input 
                 type="hidden" 
                 name="_next" 
-                value={typeof window !== 'undefined' ? window.location.href : 'http://localhost:5173/'} 
+                value="https://bot-restaurante-frontend-git-main-renato130887.vercel.app/" 
               />
 
               <div className="form-grupo">
@@ -163,7 +162,7 @@ function App() {
           </div>
 
         </div>
-      </section> 
+      </section>
 
       {/* 7. BOTÃO FLUTUANTE DO CHATBOT */}
       <button
