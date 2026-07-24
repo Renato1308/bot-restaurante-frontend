@@ -2,14 +2,20 @@
 import Chatbot from "./pages/Chatbot";
 import Cardapio from "./pages/Cardapio";
 import React, { useState } from 'react';
-import { MessageSquare, X, UtensilsCrossed } from 'lucide-react';
+import { MessageSquare, X, UtensilsCrossed, CheckCircle2 } from 'lucide-react';
 import './App.css';
 import './styles/sobreNos.css';
 import './styles/contato.css';
 
 function App() {
-  // 2. ESTADOS: Controla a abertura do Chatbot
+  // 2. ESTADOS: Controla a abertura do Chatbot e o estado de envio do formulário
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [enviado, setEnviado] = useState(false);
+
+  // Função para lidar com o envio do formulário
+  const handleSubmit = () => {
+    setEnviado(true);
+  };
 
   return (
     <div className="landing-page">
@@ -128,37 +134,67 @@ function App() {
             </div>          
           </div>
 
-          {/* Formulário Conectado ao E-mail com Redirecionamento Fixo */}
+          {/* Formulário Conectado ao E-mail com Resposta Automática e Confirmação */}
           <div className="contato-formulario">
             <h3>Envie uma mensagem</h3>
-            <form action="https://formsubmit.co/09914700d0036ac7738777a21a97e7b6" method="POST">
-              
-              <input type="hidden" name="_subject" value="Novo Contato - Renato's Bistrô!" />
-              <input type="hidden" name="_captcha" value="false" />
-              
-              <input 
-                type="hidden" 
-                name="_next" 
-                value="https://bot-restaurante-frontend-git-main-renato130887.vercel.app/" 
-              />
 
-              <div className="form-grupo">
-                <label>Nome</label>
-                <input type="text" name="Nome" placeholder="Seu nome completo" required />
+            {enviado ? (
+              <div style={{
+                backgroundColor: '#d4edda',
+                color: '#155724',
+                padding: '20px',
+                borderRadius: '8px',
+                textAlign: 'center',
+                marginTop: '15px',
+                border: '1px solid #c3e6cb'
+              }}>
+                <CheckCircle2 size={40} color="#28a745" style={{ marginBottom: '10px' }} />
+                <h4 style={{ margin: '0 0 10px 0' }}>Mensagem Enviada!</h4>
+                <p style={{ margin: 0 }}>
+                  Obrigado pela sua mensagem, nossa equipe do Renato's Bistrô irá retornar o mais breve possível.
+                </p>
               </div>
+            ) : (
+              <form 
+                action="https://formsubmit.co/09914700d0036ac7738777a21a97e7b6" 
+                method="POST"
+                onSubmit={handleSubmit}
+              >
+                
+                <input type="hidden" name="_subject" value="Novo Contato - Renato's Bistrô!" />
+                <input type="hidden" name="_captcha" value="false" />
+                
+                {/* Envia e-mail automático de confirmação para quem preencheu */}
+                <input 
+                  type="hidden" 
+                  name="_autoresponse" 
+                  value="Olá! Recebemos a sua mensagem e agradecemos o contato com o Renato's Bistrô. Nossa equipe irá retornar em breve!" 
+                />
 
-              <div className="form-grupo">
-                <label>E-mail</label>
-                <input type="email" name="E-mail" placeholder="seuemail@exemplo.com" required />
-              </div>
+                <input 
+                  type="hidden" 
+                  name="_next" 
+                  value="https://bot-restaurante-frontend-git-main-renato130887.vercel.app/" 
+                />
 
-              <div className="form-grupo">
-                <label>Mensagem</label>
-                <textarea name="Mensagem" rows="4" placeholder="Em que podemos ajudar? (Dúvidas, eventos, elogios...)" required></textarea>
-              </div>
+                <div className="form-grupo">
+                  <label>Nome</label>
+                  <input type="text" name="Nome" placeholder="Seu nome completo" required />
+                </div>
 
-              <button type="submit" className="form-botao">Enviar Mensagem</button>      
-            </form>
+                <div className="form-grupo">
+                  <label>E-mail</label>
+                  <input type="email" name="E-mail" placeholder="seuemail@exemplo.com" required />
+                </div>
+
+                <div className="form-grupo">
+                  <label>Mensagem</label>
+                  <textarea name="Mensagem" rows="4" placeholder="Em que podemos ajudar? (Dúvidas, eventos, elogios...)" required></textarea>
+                </div>
+
+                <button type="submit" className="form-botao">Enviar Mensagem</button>      
+              </form>
+            )}
           </div>
 
         </div>
