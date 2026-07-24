@@ -1,0 +1,23 @@
+# Ambientes Virtuais Python
+venv/
+.venv/
+env/
+
+# Dependências Node.js (React/Vite antigo)
+node_modules/
+
+# Banco de Dados Local SQLite
+*.sqlite3
+restaurante.db
+
+# Cache de Compilação do Python
+__pycache__/
+*.pyc
+
+# Coleta de Estáticos e Vercel
+staticfiles_build/
+staticfiles/
+.vercel/
+
+# Variáveis de ambiente secretas
+.env
