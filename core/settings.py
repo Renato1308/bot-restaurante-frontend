@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Adicionado para servir CSS/JS em produção
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,8 +121,18 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Pasta onde o Django junta TODOS os estáticos durante o deploy na Vercel
-STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
+# Pasta onde o Django junta TODOS os estáticos durante o deploy
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Armazenamento otimizado com compressão e cache do WhiteNoise
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Configuração de upload de arquivos de Mídia
 MEDIA_URL = '/media/'
