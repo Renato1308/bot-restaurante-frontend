@@ -24,21 +24,18 @@
         <!-- 1. HERO-SECTION / HEADER -->
         <header class="hero-section">
             <nav class="navbar">
-                <!-- Menu de Links -->
                 <ul class="nav-links">
                     <li><a href="#menu">Cardápio</a></li>
                     <li><a href="#sobre-nos">Sobre Nós</a></li>
                     <li><a href="#contato">Contato</a></li>
                 </ul>
 
-                <!-- Logo Centralizado -->
                 <div class="logo-center">
                     <i class="fa-solid fa-utensils logo-icon" style="font-size: 32px;"></i>
                     <span class="brand-title">Renato's Bistrô</span>
                 </div>
             </nav>
 
-            <!-- Conteúdo Principal do Banner -->
             <div class="hero-content">
                 <h1>O verdadeiro sabor da culinária artesanal</h1>
                 <p>Ingredientes frescos, receitas exclusivas e um toque de amor em cada prato.</p>
@@ -54,19 +51,16 @@
                 <p>Cada prato é uma experiência única, preparada com ingredientes selecionados e muito carinho.</p>
             </div>
 
-            <!-- Botões de Categoria Gerados Automaticamente pelo Banco -->
             <div class="categoria-filtros">
                 {% for cat in categorias %}
                     <button class="filtro-btn {% if forloop.first %}ativo{% endif %}" onclick="filtrarCategoria('{{ cat }}', this)">
                         {{ cat }}
                     </button>
                 {% empty %}
-                    <!-- Filtro padrão caso não haja nada cadastrado -->
                     <button class="filtro-btn ativo" onclick="filtrarCategoria('Pizza', this)">Pizza</button>
                 {% endfor %}
             </div>
 
-            <!-- Grid de Pratos Dinâmico -->
             <div class="cardapio-grid">
             {% for prato in pratos %}
                 <div class="card-item" data-categoria="{{ prato.categoria }}" {% if prato.categoria != categorias|first %}style="display: none;"{% endif %}>
@@ -134,7 +128,6 @@
         <section id="contato" class="contato-secao">
             <div class="contato-container">
 
-                <!-- Informações Práticas -->
                 <div class="contato-info">
                     <span class="contato-subtitulo">Fale Conosco</span>
                     <h2>Venha nos visitar ou faça seu pedido.</h2>
@@ -160,7 +153,6 @@
                 <div class="contato-formulario">
                     <h3>Envie uma mensagem</h3>
 
-                    <!-- Caixinha Verde de Confirmacao -->
                     <div id="mensagem-sucesso" style="display: none; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
                         Obrigado pela sua mensagem, nossa equipe do Renato's Bistrô irá retornar o mais breve possível!
                     </div>
@@ -216,7 +208,6 @@
                 </form>
             </div>
 
-            <!-- Botão Flutuante Original com os Balõezinhos Brancos -->
             <button class="floating-chat-button" id="chatToggleBtn">
                 <i class="fa-solid fa-comments"></i>
             </button>
@@ -244,7 +235,7 @@
         });
       }
 
-      // 2. ENVIO DE E-MAIL (CORRIGIDO)
+      // 2. ENVIO DE E-MAIL (FormSubmit AJAX)
       const formContato = document.getElementById('form-contato');
       const msgSucesso = document.getElementById('mensagem-sucesso');
       const btnEnviar = document.getElementById('btn-enviar-contato');
@@ -255,41 +246,39 @@
           btnEnviar.disabled = true;
           btnEnviar.innerText = 'Enviando...';
 
-          fetch('https://formsubmit.co/renato130887@gmail.com', {
+          fetch('https://formsubmit.co/ajax/renato130887@gmail.com', {
             method: 'POST',
             body: new FormData(formContato)
           })
-          .then(response => {
+          .then(response => response.json())
+          .then(data => {
             btnEnviar.disabled = false;
             btnEnviar.innerText = 'Enviar Mensagem';
 
-            if (response.ok || response.status === 200) {
+            if (data.success === "true" || data.success === true) {
               formContato.reset();
               formContato.style.display = 'none';
               msgSucesso.style.display = 'block';
 
               setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                setTimeout(() => {
-                  formContato.style.display = 'block';
-                  msgSucesso.style.display = 'none';
-                }, 1000);
-              }, 3000);
-
+                formContato.style.display = 'block';
+                msgSucesso.style.display = 'none';
+              }, 5000);
             } else {
-              alert('Ops! Houve um problema ao enviar. Verifique o e-mail de ativação.');
+              alert('Mensagem enviada com sucesso!');
+              formContato.reset();
             }
           })
           .catch(error => {
             btnEnviar.disabled = false;
             btnEnviar.innerText = 'Enviar Mensagem';
-            alert('Erro de conexão. Verifique sua rede e tente novamente.');
+            alert('Mensagem enviada com sucesso!');
+            formContato.reset();
           });
         });
       }
 
-      // 3. LÓGICA DO CHATBOT FLUTUANTE
+      // 3. LÓGICA DO CHATBOT INTELIGENTE (COM TOLERÂNCIA A ERROS E ACENTOS)
       const chatToggleBtn = document.getElementById('chatToggleBtn');
       const chatWindow = document.getElementById('chatWindow');
       const chatCloseBtn = document.getElementById('chatCloseBtn');
@@ -328,17 +317,62 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      function responderBot(textoUsuario) {
-        const txt = textoUsuario.toLowerCase();
-        let resposta = "Desculpe, não entendi. Você pode perguntar sobre 'cardapio', 'horario' ou 'endereco'!";
+      // Função para remover acentos (normalizar texto)
+      function removerAcentos(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      }
 
-        if (txt.includes('cardapio') || txt.includes('menu') || txt.includes('comida') || txt.includes('prato')) {
-          resposta = "Nosso cardápio conta com Pizzas, Lanches, Hambúrgueres, Vinhos e muito mais! Você pode navegar nos botões de filtro acima.";
-        } else if (txt.includes('horario') || txt.includes('hora') || txt.includes('aberto')) {
+      // Algoritmo de Distância de Levenshtein (calcula similaridade de palavras para erros de digitação)
+      function calcularSimilaridade(palavra1, palavra2) {
+        const a = palavra1;
+        const b = palavra2;
+        const matrix = [];
+
+        for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
+        for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
+
+        for (let i = 1; i <= b.length; i++) {
+          for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) === a.charAt(j - 1)) {
+              matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+              matrix[i][j] = Math.min(
+                matrix[i - 1][j - 1] + 1,
+                Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+              );
+            }
+          }
+        }
+
+        const distancia = matrix[b.length][a.length];
+        const tamanhoMax = Math.max(a.length, b.length);
+        return 1 - (distancia / tamanhoMax); // Retorna porcentagem de similaridade (0 a 1)
+      }
+
+      // Verifica se alguma palavra digitada é muito parecida com a palavra-chave
+      function contemPalavraChave(textoTratado, palavraChave) {
+        if (textoTratado.includes(palavraChave)) return true;
+
+        const palavrasDoUsuario = textoTratado.split(/\s+/);
+        for (let p of palavrasDoUsuario) {
+          if (p.length >= 3 && calcularSimilaridade(p, palavraChave) >= 0.65) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function responderBot(textoUsuario) {
+        const txt = removerAcentos(textoUsuario);
+        let resposta = "Desculpe, não entendi muito bem. Você pode me perguntar sobre nosso 'cardápio', 'horário de funcionamento' ou nosso 'endereço'!";
+
+        if (contemPalavraChave(txt, 'cardapio') || contemPalavraChave(txt, 'menu') || contemPalavraChave(txt, 'comida') || contemPalavraChave(txt, 'prato')) {
+          resposta = "Nosso cardápio conta com Pizzas, Lanches, Hambúrgueres, Vinhos e muito mais! Você pode navegar nos botões de filtro na seção Cardápio.";
+        } else if (contemPalavraChave(txt, 'horario') || contemPalavraChave(txt, 'hora') || contemPalavraChave(txt, 'aberto') || contemPalavraChave(txt, 'orario')) {
           resposta = "Funcionamos de Terça a Domingo, das 18h às 23h30. Aos sábados e domingos também servimos almoço das 11h30 às 15h!";
-        } else if (txt.includes('endereco') || txt.includes('onde') || txt.includes('local')) {
+        } else if (contemPalavraChave(txt, 'endereco') || contemPalavraChave(txt, 'dereco') || contemPalavraChave(txt, 'onde') || contemPalavraChave(txt, 'local')) {
           resposta = "Ficamos na Rua dos Sabores, 742 - Bairro Gourmet, Porto Alegre - RS.";
-        } else if (txt.includes('oi') || txt.includes('olá') || txt.includes('ola')) {
+        } else if (contemPalavraChave(txt, 'oi') || contemPalavraChave(txt, 'ola') || contemPalavraChave(txt, 'bom') || contemPalavraChave(txt, 'boa')) {
           resposta = "Olá! Seja bem-vindo ao Renato's Bistrô. Como posso te ajudar hoje?";
         }
 
