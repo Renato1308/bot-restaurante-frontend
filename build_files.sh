@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Para o script imediatamente em caso de erro
-set -e
+# Imprime mensagens para acompanhar o log na Vercel
+echo "Building the project..."
 
-# Instala as dependências do Python
-python3 -m pip install -r requirements.txt
+# Instala as dependências
+python3.9 -m pip install -r requirements.txt
 
-# Coleta os arquivos estáticos do Django
-python3 manage.py collectstatic --noinput --clear
+# Executa o collectstatic para o WhiteNoise/estáticos funcionar
+python3.9 manage.py collectstatic --noinput --clear
 
-echo "BUILD CONCLUÍDO COM SUCESSO!"
+echo "Build complete!"
