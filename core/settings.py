@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Adicionado para servir CSS/JS em produção
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise ativo logo após SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,13 +124,13 @@ STATICFILES_DIRS = [
 # Pasta onde o Django junta TODOS os estáticos durante o deploy
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Armazenamento otimizado com compressão e cache do WhiteNoise
+# Armazenamento seguro e comprimido com WhiteNoise (sem exigi-lo via manifesto estrito)
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
