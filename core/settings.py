@@ -124,7 +124,7 @@ STATICFILES_DIRS = [
 # Pasta onde o Django junta TODOS os estáticos durante o deploy
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Armazenamento seguro e comprimido com WhiteNoise (sem exigi-lo via manifesto estrito)
+# Armazenamento seguro e comprimido com WhiteNoise
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -134,9 +134,4 @@ STORAGES = {
     },
 }
 
-# Configuração de upload de arquivos de Mídia
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# Tipo padrão para chaves primárias automáticas
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+WHITENOISE_MANIFEST_STRICT = False

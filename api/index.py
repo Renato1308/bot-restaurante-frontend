@@ -1,13 +1,19 @@
 import os
 import sys
+from pathlib import Path
 
 # Adiciona o diretório raiz do projeto ao Python Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Define as configurações do Django explicitamente para o ambiente Serverless
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
-from core.wsgi import application
+# Força a criação da pasta staticfiles na Vercel antes de carregar o app
+from django.core.management import call_command
+from django.core.wsgi import get_wsgi_application
 
-# A Vercel procura por uma variável chamada 'app'
-app = application
+try:
+    call_command('collectstatic', '--noinput', '--clear')
+except Exception as e:
+    print(f"Erro no collectstatic: {e}")
+
+app = get_wsgi_application()
